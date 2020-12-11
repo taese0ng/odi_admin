@@ -65,8 +65,45 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'prefer-promise-reject-errors': 'off',
 
-
-    // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
-  }
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-trailing-spaces': 'off',
+    'no-unused-expressions': 'off',
+    semi: ['error', 'always'],
+    'no-unused-vars': 'off',
+    'no-var': 'error',
+    'space-before-function-paren': 'off',
+    'keyword-spacing': 'off',
+    'max-len': [
+      'error',
+      {
+        code: 180,
+        ignoreComments: true,
+        ignoreTrailingComments: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignoreUrls: true,
+      },
+    ],
+    'comma-dangle': [
+      'error',
+      'always-multiline',
+      {
+        arrays: 'never',
+        objects: 'always',
+        imports: 'never',
+        exports: 'always',
+        functions: 'never',
+      },
+    ],
+    'no-multi-spaces': [
+      'error',
+      {
+        ignoreEOLComments: true,
+        exceptions: { Property: true },
+      },
+    ],
+    'vue/require-valid-default-prop': 'off',
+    'vue/valid-v-for': 'off',
+  },
 }

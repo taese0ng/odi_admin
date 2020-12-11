@@ -1,1 +1,96 @@
 // app global css in SCSS form
+// app global css in SCSS form
+@font-face {
+  font-family: NanumGOTHIC;
+  src: url("../assets/NanumFontSetup_TTF_GOTHIC/NanumGothic.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+}
+
+* {
+  font-family: 'Noto Sans KR', NanumGOTHIC, sans-serif;
+}
+
+.container {
+  // min-width: 1024px !important;
+}
+
+.maxContainer{
+  &-md{
+    max-width: 512px !important;
+  }
+  &-lg{
+    max-width: 1024px !important;
+  }
+}
+
+.input {
+  &-sm {
+    width: 300px !important;
+  }
+
+  &-md {
+    width: 400px !important;
+  }
+
+  &-lg {
+    width: 500px !important;
+  }
+}
+
+.img {
+  &-square {
+    &-sm {
+
+    }
+  }
+
+  &-sm {
+    width: 200px;
+  }
+
+  &-md {
+    width: 300px;
+  }
+}
+
+.btn {
+  &-sm {
+    width: 120px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  &-md {
+    width: 180px;
+    height: 45px;
+    font-size: 15px;
+  }
+
+  &-lg{
+    width: 240px;
+    height: 45px;
+    font-size: 15px;
+  }
+}
+
+.header {
+  &__title {
+    &--xl {
+      font-size: xx-large;
+      font-weight: bold;
+    }
+    &--lg{
+      font-size: x-large;
+      font-weight: 600;
+    }
+  }
+}
+
+.necessary{
+  &::before{
+    color: red;
+    content: "*";
+  }
+}
+

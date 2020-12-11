@@ -1,9 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import { Cookies } from 'quasar';
 
-// import example from './module-example'
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -14,16 +13,25 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
+// store.js
+export const store = new Vuex.Store({
+  state: {
+    loginName: '',
+    isLogin: !!Cookies.get('access_token'),
+  },
+  
+  mutations: {
+    setLoginName(state, payload) {
+      state.loginName = payload.name;
+      state.isLogin = true;
     },
+  },
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEBUGGING
-  })
+  getters: {
+    getLoginInfo(state) {
+      return { name: state.loginName, isLogin: state.isLogin };
+    },
+  },
+});
 
-  return Store
-}
+export default store;
