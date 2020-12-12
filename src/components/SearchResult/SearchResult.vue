@@ -5,7 +5,7 @@
         전체 : {{ searchResultCount }}
       </q-badge>
     </div>
-    <div class="col-4">
+    <div class="col-8 col-sm-4">
       <div class="row justify-end">
         <div class="col-5 q-mr-md">
           <template v-if="sortOptions">

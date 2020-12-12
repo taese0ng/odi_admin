@@ -2,71 +2,27 @@
   <q-page padding>
     <Header :title="title"/>
 
-    <q-card flat bordered class="q-mt-md">
+    <q-card flat bordered class="q-mt-md maxContainer-md q-mx-auto">
       <q-card-section>
-        <div class="row q-mb-md bg-grey-2 q-pa-md ">
-
-          <div class="col-1">프로필 이미지</div>
-
-          <div class="col-2 text-center">
-            <q-img :src="imgUrl" style="height: 110px; max-width: 110px"/>
-          </div>
-
-          <div class="col-2 self-end">
-            <q-btn label="이미지 삭제" dense color="red"/>
-          </div>
-
-          <div class="col-3">
-            <div class="row">
-              <div class="col-4">
-                상태 :
-              </div>
-              <div class="col-8">
-                <q-radio class="q-ml-sm q-mb-sm full-width" dense color="blue-grey-9"
-                         v-model="status" val="run" label="사용중"/>
-                <q-radio class="q-ml-sm full-width" dense color="blue-grey-9"
-                         v-model="status" val="stop" label="정지"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-4 ">
-            <div class="row">
-              <div class="col-4 text-right">
-                소셜로그인
-              </div>
-
-              <div class="col-8 text-center">
-                <div v-for="item in snsEmail" :key="item.type" class="q-mb-sm">
-                  <q-img :src="item.icon" style="height: 25px; width: 25px"/>
-                  {{ item.email }}
-                  <q-btn round icon="clear" color="red" size="xs"/>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row q-mb-md">
-
-          <div class="col-6 q-pr-md">
+        <div class="row">
+          <div class="col-12 q-mb-md">
             <div class="text-grey">
-              <q-input label-slot filled dense v-model="email" disable
-                       color="blue-grey-9" ref="email">
+              <q-input label-slot filled dense v-model="id"
+              color="blue-grey-9" ref="id">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
-                    이메일
+                    아이디
                   </div>
                 </template>
-                <template v-if="email" v-slot:append>
-                  <q-icon name="close" @click.stop="email = ''" class="cursor-pointer"/>
+                <template v-if="id" v-slot:append>
+                  <q-icon name="close" @click.stop="id = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
             </div>
           </div>
-
-          <div class="col-6">
-            <div class="row">
+    
+        <div class="col-12 q-mb-md">        
+          <div class="row">
               <div class="col-6 q-pr-xs">
                 <div class="text-grey">
                   <q-input type="password" label-slot filled dense v-model="password"
@@ -99,13 +55,10 @@
                 </div>
               </div>
             </div>
+
           </div>
 
-        </div>
-
-        <div class="row q-mb-md">
-
-          <div class="col-6 q-pr-md">
+          <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="name"
                        color="blue-grey-9" ref="name">
@@ -120,8 +73,31 @@
               </q-input>
             </div>
           </div>
+        </div>
 
-          <div class="col-6">
+        <div class="row">
+
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label-slot filled dense v-model="email"
+                       color="blue-grey-9" ref="email">
+                <template v-slot:label>
+                  <div class="row all-pointer-events items-center necessary">
+                    이메일
+                  </div>
+                </template>
+                <template v-if="email" v-slot:append>
+                  <q-icon name="close" @click.stop="email = ''" class="cursor-pointer"/>
+                </template>
+              </q-input>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row ">
+
+          <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="phone"
                        color="blue-grey-9" ref="phone">
@@ -137,143 +113,38 @@
             </div>
           </div>
 
-        </div>
-
-        <div class="row q-mb-md bg-grey-2 items-center q-pl-xs">
-
-          <div class="col-1 necessary q-pl-sm">주소</div>
-
-          <div class="col-2 q-pr-xs">
-            <q-btn label="주소검색" class="full-width" @click="onClickAddressSearch"/>
-          </div>
-
-          <div class="col-2">
-            <q-input dense class="bg-grey-5 q-ma-xs" filled v-model="zipCode" disable/>
-          </div>
-
-          <div class="col-4">
-            <q-input dense class="bg-grey-5 q-ma-xs" filled v-model="address1" disable/>
-          </div>
-
-          <div class="col-3 text-grey">
-            <q-input label="상세주소" filled dense v-model="address2"
-                     color="blue-grey-9 q-ma-xs" ref="address2">
-              <template v-if="address2" v-slot:append>
-                <q-icon name="close" @click.stop="address2 = ''" class="cursor-pointer"/>
-              </template>
-            </q-input>
-          </div>
-        </div>
-
-        <div class="row q-mb-md bg-grey-2 items-center q-pl-xs">
-
-          <div class="col-2">
-            <q-select color="blue-grey-9" filled label="반려동물 수" @input="createPetsRow"
-                      v-model="petsNum" :options="petsNumOption" dense/>
-          </div>
-
-          <div class="col-2 text-center">
-            구분
-          </div>
-
-          <div class="col-1 text-center">
-            성별
-          </div>
-
-          <div class="col-1 text-center">
-            중성화
-          </div>
-
-          <div class="col-4 text-center">
-            품종
-          </div>
-
-          <div class="col-2 text-center">
-            생년월
-          </div>
-
-        </div>
-
-        <div v-for="(item,index) in petsRow" :key="index" class="row q-mb-sm bg-blue-4 items-center">
-          <div class="col-2 q-pl-sm">반려동물 {{ index + 1 }}</div>
-
-          <div class="col-2 text-center">
-            <q-select color="blue-grey-9" filled label="선택" class="bg-grey-3 q-mr-xs"
-                      v-model="item.petsType" :options="petsOption" dense/>
-          </div>
-
-          <div class="col-1 text-center">
-            <q-select color="blue-grey-9" filled label="선택" class="bg-grey-3"
-                      v-model="item.petsGender" :options="genderOption" dense/>
-          </div>
-
-          <div class="col-1 text-center">
-            <q-checkbox keep-color color="blue-grey-9" v-model="item.neutralization"/>
-          </div>
-
-          <div class="col-4 text-grey text-center">
+          <div class="col-12 bg-grey-2 q-mb-md">
             <div class="row items-center">
-              <div class="col-9">
-                <q-input label="품종 검색으로 입력" filled dense v-model="item.petsVariety"
-                         disable color="blue-grey-9" class="q-ma-xs bg-grey-3" ref="petsVariety">
-                  <template v-if="item.petsVariety" v-slot:append>
-                    <q-icon name="close" @click.stop="item.petsVariety = ''" class="cursor-pointer"/>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-3">
-                <q-btn class="bg-grey-7 text-white" label="품종 검색" @click="isDialog = true"/>
-              </div>
+              <div class="col-4 q-pl-md">성별</div>
+              <q-radio class="col-4" v-model="gender" val="male" label="남"/>
+              <q-radio class="col-4" v-model="gender" val="female" label="여"/>
             </div>
           </div>
 
-          <div class="col-2">
-            <div class="row">
-              <div class="col-6">
-                <q-input label="년도" filled dense v-model="item.birthYear" class="q-ma-xs bg-grey-3"
-                         color="blue-grey-9 " ref="birthYear">
-                  <template v-if="item.birthYear" v-slot:append>
-                    <q-icon name="close" @click.stop="item.birthYear = ''" class="cursor-pointer"/>
-                  </template>
-                </q-input>
-              </div>
-
-              <div class="col-6">
-                <q-input label="월" filled dense v-model="item.birthMonth" class="q-ma-xs bg-grey-3"
-                         color="blue-grey-9 " ref="birthMonth">
-                  <template v-if="item.birthMonth" v-slot:append>
-                    <q-icon name="close" @click.stop="item.birthMonth = ''" class="cursor-pointer"/>
-                  </template>
-                </q-input>
-              </div>
+          <div class="col-12">
+            <div class="text-grey">
+              <q-input label-slot filled dense v-model="birth"
+                       color="blue-grey-9" ref="birth">
+                <template v-slot:label>
+                  <div class="row all-pointer-events items-center necessary">
+                    생년월일
+                  </div>
+                </template>
+                <template v-if="birth" v-slot:append>
+                  <q-icon name="close" @click.stop="birth = ''" class="cursor-pointer"/>
+                </template>
+              </q-input>
             </div>
           </div>
-        </div>
 
-        <div class="row q-mb-md bg-grey-2 items-center q-pa-md">
-          <div class="col-1 self-start">제제사항</div>
-          <div class="col-11">
-            <Table title="" :rows="rows" :columns="columns" @onClickUnlock="onClickUnlock"/>
-          </div>
         </div>
       </q-card-section>
 
-      <q-card-actions class="row items-center justify-end q-pa-sm">
-        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickWithdrawal">
-          탈퇴 처리
-        </q-btn>
-        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickChangeManager">
-          강사 전환
-        </q-btn>
-        <q-btn color="blue-6" class="btn-sm" @click="onClickSave">
-          저장
-        </q-btn>
-        <q-btn color="red-5" class="btn-sm" @click="onClickCancel">
-          취소
-        </q-btn>
+      <q-card-actions>
+          <q-btn color="red" class="full-width q-mb-sm" @click="onClickWithdrawal" label="회원탈퇴"/>            
+          <q-btn color="blue-grey-8" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
+          <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
-
     </q-card>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
@@ -284,22 +155,16 @@
 
 <script>
 import Header from 'components/Header/Header';
-import Table from 'components/Table/PoliceRecordsTable';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
-import googleIcon from 'assets/icon/googleIcon.png';
-import naverIcon from 'assets/icon/naverIcon.png';
-import kakaoIcon from 'assets/icon/kakaoIcon.png';
-import API from 'src/repositories/Member/NormalAPI';
 
 export default {
   name: 'NormalDetail',
 
   components: {
     Header,
-    Table,
     Confirm,
     Alert,
     Dialog,
@@ -309,31 +174,17 @@ export default {
     return {
       title: '일반회원 수정',
 
-      imgUrl: defaultProfile,
-      status: 'run',
-      snsEmail: [
-        {
-          type: 'naver',
-          email: 'tskim@hnmcorp.kr',
-          icon: naverIcon,
-        },
-        {
-          type: 'kakao',
-          email: 'tskim@hnmcorp.kr',
-          icon: kakaoIcon,
-        },
-        {
-          type: 'google',
-          email: 'tskim@hnmcorp.kr',
-          icon: googleIcon,
-        },
-      ],
-
+      id: '',
+      businessNum: '',
       email: '',
       name: '',
       password: '',
       passwordConfirm: '',
       phone: '',
+      businessCondition: '',
+      businessEvent: '',
+      gender: '',
+      birth: '',
 
       isDialog: false,
       isConfirm: false,
@@ -341,158 +192,59 @@ export default {
       msg: '',
       confirmMethod: null,
 
-      zipCode: '',
-      address1: '',
-      address2: '',
-
-      petsNumOption: [0, 1, 2, 3, 4, 5],
-      petsOption: ['반려견', '반려묘', '기타 동물'],
-      genderOption: ['암', '수'],
-      petsNum: 0,
-
-      petsRow: [
-        // {
-        //   petsType: null,
-        //   petsGender: null,
-        //   neutralization: false,
-        //   petsVariety: '',
-        //   birthYear: '',
-        //   birthMonth: '',
-        // },
-      ],
-
-      columns: [
-        {
-          label: 'no',
-          align: 'center',
-        },
-        {
-          label: '신고된 작성 내용',
-          align: 'center',
-        },
-        {
-          label: '금지일시',
-          align: 'center',
-        },
-        {
-          label: '등록자명',
-          align: 'center',
-        },
-        {
-          label: '처리',
-          align: 'center',
-        },
-      ],
-
-      rows: [
-        {
-          id: 1,
-          no: 1,
-          contents: '그냥',
-          data: '2020-12-03',
-          registeredPerson: '김태성',
-        },
-      ],
+      selectedTax: null,
+      taxClassification: [
+        { label: '일반과세자', value: 'normal' }, 
+        { label: '간이과세자', value: 'simple' }, 
+        { label: '법인과세자', value: 'artificial' }, 
+        { label: '부가가치세 면세사업자', value: 'value_added' }, 
+        { label: '면세법인 사업자', value: 'tax_free' }],
+    
+      agreeAD: false,
     };
   },
 
-  created() {
-    this.initUser(this.$route.params.id);
-  },
-
   methods: {
-    async initUser(id) {
-      const apiResult = await API.getUser(id);
-      if(apiResult.status === 200) {
-        const data = apiResult.data;
-        console.log(data);
+    onClickCreate () {
+      this.msg = '생성하시겠습니까?';
+      this.confirmMethod = this.createAdmin;
+      this.isConfirm = true;
+    },
+
+    createAdmin() {
+      if(!this.id) {
+        this.msg = 'ID를 입력해주세요';
+        this.isAlert = true;
+      } else if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
+        this.msg = '비밀번호를 확인해주세요!';
+        this.isAlert = true;
+      }else if(!this.email) {
+        this.msg = '이메일을 입력해주세요!';
+        this.isAlert = true;
+      } else if(!this.name) {
+        this.msg = '이름을 입력해주세요!';
+        this.isAlert = true;
+      } else if(!this.phone) {
+        this.msg = '휴대전화를 입력해주세요!';
+        this.isAlert = true;
+      } else if(!this.address1 || !this.zipCode) {
+        this.msg = '주소를 입력해주세요!';
+        this.isAlert = true;
       } else {
-        console.log(apiResult.response);
+        console.log('created!');
       }
+    },
+
+    onClickCancel () {
+      this.$router.back();
     },
 
     closeConfirm () {
       this.isConfirm = false;
     },
 
-    createPetsRow () {
-      const row = [];
-
-      for (let i = 0; i < this.petsNum; i++) {
-        if (this.petsRow.length > i) {
-          row.push(this.petsRow[i]);
-        } else {
-          const data =
-            {
-              petsType: null,
-              petsGender: null,
-              neutralization: false,
-              petsVariety: '',
-              birthYear: '',
-              birthMonth: '',
-            };
-          row.push(data);
-        }
-      }
-
-      this.petsRow = row;
-    },
-
-    onClickAddressSearch () {
-      console.log('주소검색');
-    },
-
-    onClickUnlock (targetRow) {
-      this.msg = '해제하시겠습니까?';
-      this.confirmMethod = () => {
-        console.log(targetRow, '처리');
-      };
-      this.isConfirm = true;
-    },
-
-    onClickWithdrawal () {
-      this.msg = '탈퇴 처리 하겠습니까?';
-      this.confirmMethod = () => {
-        console.log('탈퇴처리');
-      };
-      this.isConfirm = true;
-    },
-
-    onClickChangeManager () {
-      this.msg = '강사로 전환하시겠습니까?';
-      this.confirmMethod = () => {
-        console.log('강사전환');
-      };
-      this.isConfirm = true;
-    },
-
-    onClickSave () {
-      console.log('저장');
-      this.msg = '저장하시겠습니까?';
-      this.confirmMethod = this.saveUser;
-      this.isConfirm = true;
-    },
-
-    saveUser () {
-      if (!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
-        this.msg = '비밀번호를 확인해주세요!';
-        this.isAlert = true;
-      } else if (!this.name) {
-        this.msg = '이름을 입력해주세요!';
-        this.isAlert = true;
-      } else if (!this.phone) {
-        this.msg = '휴대전화를 입력해주세요!';
-        this.isAlert = true;
-      } else if (!this.detailAddress || !this.zipCode) {
-        this.msg = '주소를 입력해주세요!';
-        this.isAlert = true;
-      } else {
-        console.log('saved!');
-      }
-    },
-
-    onClickCancel () {
-      this.$router.back();
+    onClickWithdrawal() {
+      console.log('탈퇴');
     },
   },
 };

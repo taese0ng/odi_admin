@@ -177,13 +177,9 @@
         </div>
       </q-card-section>
 
-      <q-card-actions class="row items-center justify-end q-pa-sm">
-        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickCreate">
-          회원가입
-        </q-btn>
-        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickCancel">
-          취소
-        </q-btn>
+      <q-card-actions>         
+          <q-btn color="blue-grey-8" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
+          <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 
     </q-card>

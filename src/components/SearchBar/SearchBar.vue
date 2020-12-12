@@ -1,6 +1,6 @@
 <template>
   <q-form class="row full-width q-pt-md q-pb-md">
-    <div class="col-10 row items-center">
+    <div class="col-12 col-sm-10 row items-center q-pr-sm q-mb-sm">
       <q-select @input="(targetOptionValue) => $emit('optionChange', targetOptionValue)" :value="selectedOption"
                 :options="searchOptions" color="blue-grey-9"
                 label="검색어" dense class="col-3"/>
@@ -8,7 +8,7 @@
                @input="(targetInputValue) => $emit('searchInput', targetInputValue)" color="blue-grey-9"
                dense class="q-pl-md col-9"/>
     </div>
-    <div class="q-pl-md col-2 row items-center">
+    <div class=" col-12 col-sm-2 row items-center">
       <q-btn type="submit" class="self-center full-width" color="blue-grey-9" icon="search" label="검색"
              @click.prevent="$emit('onClickSearch')"/>
     </div>

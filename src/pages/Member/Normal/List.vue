@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <Header :title="title" :subBtn="registerBtn"/>
+    <Header :title="title"/>
 
     <SearchBar :searchOptions="searchOptions" :searchValue="searchValue"
                :selectedOption="selectedOption"
@@ -20,13 +20,7 @@
            :paginationOptions="paginationOptions" @onClickModify="onClickModify"
            @onClickWithdrawal="onClickWithdrawal"/>
 
-    <div class="row justify-start q-my-lg">
-      <q-btn class="btn-sm" no-caps color="green-9" label="Excel 저장" :disable="selectedItems.length===0"/>
-      <q-btn class="q-mx-sm btn-sm" no-caps color="blue-grey-9" label="E-mail" :disable="selectedItems.length===0"/>
-      <q-btn class="btn-sm" no-caps color="blue-grey-9" label="SMS" :disable="selectedItems.length===0"/>
-    </div>
-
-    <div class="row justify-center">
+    <div class="row justify-center q-mt-md">
       <Pagination :itemLength="allCount"
                   :rowsPerPage="paginationOptions.rowsPerPage"
                   :maxPages="5" :movePage="movePage" :current="currentPage"/>
@@ -81,12 +75,7 @@ export default {
       },
       sortOptions: ['가입일', '이름순', '최근로그인'],
       sortOption: '가입일',
-      registerBtn: {
-        title: '등록',
-        method: () => {
-          this.$router.push({ name: 'normalAdd' });
-        },
-      },
+
       selectedItems: [],
       columnLabels: ['번호', '아이디', '이름', '성별', '생년월일', '이메일', '전화번호', '처리'],
       columns: [],
