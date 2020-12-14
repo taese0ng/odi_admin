@@ -5,8 +5,8 @@
         <q-btn v-if="getLoginInfo.isLogin" flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title>{{ siteTitle }}</q-toolbar-title>
         <template v-if="getLoginInfo.isLogin">
-          <q-item class="items-center" to='/my-page' 
-          style="margin-right: 12px; text-decoration: none; color: white">{{ getLoginInfo.name }}</q-item>
+          <q-item-label class="items-center"
+          style="margin-right: 12px; text-decoration: none; color: white">{{ getLoginInfo.name }}</q-item-label>
           <q-btn flat color="white" no-caps label="Logout" @click='logout'/>
         </template>
       </q-toolbar>
@@ -75,75 +75,47 @@ const menuList = [
     open: false,
     subMenu: [
       {
-        label: '일반회원',
-        name: 'normal',
-        path: {
-          name: 'normalList',
-          query: { opt: 'name', search: '', page: 1, size: 10 },
-        },
-      },
-      {
-        label: '휴면회원',
-        name: 'dormant',
-        path: {
-          name: 'dormantList',
-          query: { opt: 'name', search: '', page: 1, size: 10 },
-        },
-      },
-      {
-        label: '탈퇴회원',
-        name: 'withdrawal',
-        path: {
-          name: 'withdrawalList',
-          query: { opt: 'name', search: '', page: 1, size: 10 },
-        },
-      },
-      {
-        label: '강사/매니저',
-        name: 'manager',
-        path: {
-          name: 'managerList',
-          query: { opt: 'name', search: '', page: 1, size: 10 },
-        },
-      },
-      {
-        label: '운영자',
-        name: 'admin',
-        path: {
-          name: 'adminList',
-          query: { opt: 'name', search: '', page: 1, size: 10 },
-        },
+        label: '회원정보',
+        name: 'myPage',
+        path: { name: 'myPage' },
       },
     ],
   },
   {
-    label: '기본정보관리',
+    label: '카페 정보 관리',
     open: false,
     subMenu: [
       {
-        label: 'About Weedle 아카데미',
-        name: 'weedleAcademy',
-        path: { name: 'weedleAcademy' },
+        label: '기본 정보 입력 / 수정',
+        name: 'cafeNormalInfo',
+        path: { name: 'cafeNormalInfo' },
       },
       {
-        label: 'About Weedle App',
-        name: 'weedleApp',
-        path: { name: 'weedleApp' },
+        label: '카페 관련 통계',
+        name: 'statistics',
+        path: { name: 'statistics' },
       },
+    ],
+  },
+  {
+    label: '카페 스토리 관리',
+    open: false,
+    subMenu: [
       {
-        label: '회사소개',
-        name: 'company',
-        path: { name: 'company' },
+        label: '카페 스토리 리스트',
+        name: 'cafeStoryList',
+        path: { name: 'cafeStoryList', query: { opt: 'name', search: '', page: 1 } },
       },
+    ],
+  },
+  {
+    label: '리뷰 관리',
+    open: false,
+    subMenu: [
       {
-        label: '이용약관',
-        name: 'termsOfUse',
-        path: { name: 'termsOfUse' },
-      },
-      {
-        label: '개인정보 처리방침',
-        name: 'personalInformation',
-        path: { name: 'personalInformation' },
+        label: '리뷰 탐색',
+        name: 'reviewList',
+        path: { name: 'reviewList', query: { opt: 'name', search: '', page: 1 } },
       },
     ],
   },

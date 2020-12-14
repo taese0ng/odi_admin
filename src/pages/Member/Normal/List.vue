@@ -8,23 +8,10 @@
                @searchInput="(targetInputValue) => this.searchValue=targetInputValue"
                @onClickSearch="onClickSearch"/>
 
-    <SearchResult :searchResultCount="allCount"
-                  :size="paginationOptions.rowsPerPage"
-                  :sortOptions="sortOptions"
-                  :sortOption="sortOption"
-                  @selectedSort="(targetSort) => setSortOption(targetSort)"
-                  @selectedSize="(targetSize) => setRowsPerPage(targetSize)"/>
-
     <Table title="" modifyBtn withdrawalBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
            @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"
-           :paginationOptions="paginationOptions" @onClickModify="onClickModify"
+            @onClickModify="onClickModify"
            @onClickWithdrawal="onClickWithdrawal"/>
-
-    <div class="row justify-center q-mt-md">
-      <Pagination :itemLength="allCount"
-                  :rowsPerPage="paginationOptions.rowsPerPage"
-                  :maxPages="5" :movePage="movePage" :current="currentPage"/>
-    </div>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
     <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
@@ -35,8 +22,6 @@
 import Header from 'components/Header/Header';
 import SearchBar from 'components/SearchBar/SearchBar';
 import Table from 'components/Table/MemberTable';
-import SearchResult from 'components/SearchResult/SearchResult';
-import Pagination from 'components/Pagination/Pagination';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import API from 'src/repositories/Member/NormalAPI';
@@ -48,8 +33,6 @@ export default {
     Table,
     SearchBar,
     Header,
-    SearchResult,
-    Pagination,
     Confirm,
     Alert,
   },
@@ -70,9 +53,7 @@ export default {
         { label: '이메일', value: 'email' },
         { label: '휴대전화', value: 'phone' },
       ],
-      paginationOptions: {
-        rowsPerPage: 10,
-      },
+
       sortOptions: ['가입일', '이름순', '최근로그인'],
       sortOption: '가입일',
 
@@ -92,7 +73,6 @@ export default {
     const route = this.$route.query;
     this.selectedOption = this.searchOptions.find(opt => opt.value === route.opt);
     this.currentPage = parseInt(route.page);
-    this.paginationOptions.rowsPerPage = parseInt(route.size);
     this.searchValue = this.$route.query.search;
   },
 

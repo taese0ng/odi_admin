@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <Header :title="title" :subBtn="registerBtn"/>
+    <Header :title="title" :subBtn='subBtn'/>
 
     <SearchBar :searchOptions="searchOptions" :searchValue="searchValue"
                :selectedOption="selectedOption"
@@ -8,28 +8,10 @@
                @searchInput="(targetInputValue) => this.searchValue=targetInputValue"
                @onClickSearch="onClickSearch"/>
 
-    <SearchResult :searchResultCount="allCount"
-                  :size="paginationOptions.rowsPerPage"
-                  :sortOptions="sortOptions"
-                  :sortOption="sortOption"
-                  @selectedSort="(targetSort) => setSortOption(targetSort)"
-                  @selectedSize="(targetSize) => setRowsPerPage(targetSize)"/>
-
-    <Table title="" modifyBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
+    <Table title="" modifyBtn withdrawalBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
            @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"
-           :paginationOptions="paginationOptions" @onClickModify="onClickModify"/>
-
-    <div class="row justify-start q-my-lg">
-      <q-btn class="btn-sm" no-caps color="green-9" label="Excel 저장" :disable="selectedItems.length===0"/>
-      <q-btn class="q-mx-sm btn-sm" no-caps color="blue-grey-9" label="E-mail" :disable="selectedItems.length===0"/>
-      <q-btn class="btn-sm" no-caps color="blue-grey-9" label="SMS" :disable="selectedItems.length===0"/>
-    </div>
-
-    <div class="row justify-center">
-      <Pagination :itemLength="allCount"
-                  :rowsPerPage="paginationOptions.rowsPerPage"
-                  :maxPages="5" :movePage="movePage" :current="currentPage"/>
-    </div>
+            @onClickModify="onClickModify"
+           @onClickWithdrawal="onClickWithdrawal"/>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
     <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
@@ -40,27 +22,31 @@
 import Header from 'components/Header/Header';
 import SearchBar from 'components/SearchBar/SearchBar';
 import Table from 'components/Table/MemberTable';
-import SearchResult from 'components/SearchResult/SearchResult';
-import Pagination from 'components/Pagination/Pagination';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
+import API from 'src/repositories/Member/NormalAPI';
 
 export default {
-  name: 'ManagerList',
+  name: 'CafeStoryList',
 
   components: {
     Table,
     SearchBar,
     Header,
-    SearchResult,
-    Pagination,
     Confirm,
     Alert,
   },
 
   data () {
     return {
-      title: '강사/매니저',
+      title: '사장님 카페 스토리 리스트',
+      subBtn: {
+        title: '등록',
+        method: () => {
+          this.$router.push({ name: 'cafeStoryUpload' });
+        },
+      },
+
       isConfirm: false,
       isAlert: false,
       msg: '',
@@ -70,23 +56,16 @@ export default {
       searchValue: '',
       selectedOption: '',
       searchOptions: [
-        { label: '강사명', value: 'name' },
+        { label: '회원명', value: 'name' },
         { label: '이메일', value: 'email' },
         { label: '휴대전화', value: 'phone' },
       ],
-      paginationOptions: {
-        rowsPerPage: 10,
-      },
+
       sortOptions: ['가입일', '이름순', '최근로그인'],
       sortOption: '가입일',
-      registerBtn: {
-        title: '등록',
-        method: () => {
-          this.$router.push({ name: 'managerAdd' });
-        },
-      },
+
       selectedItems: [],
-      columnLabels: ['번호', '이메일', '간편로그인', '강사명', '휴대전화', '구분', '상태', '가입일', '최근로그인 일시', '처리'],
+      columnLabels: ['번호', '아이디', '이름', '성별', '생년월일', '이메일', '전화번호', '처리'],
       columns: [],
       rows: [],
     };
@@ -94,20 +73,19 @@ export default {
 
   created() {
     this.initColumns();
-    this.initManagerList();
+    this.initNormalList();
   },
 
   beforeMount () {
     const route = this.$route.query;
     this.selectedOption = this.searchOptions.find(opt => opt.value === route.opt);
     this.currentPage = parseInt(route.page);
-    this.paginationOptions.rowsPerPage = parseInt(route.size);
     this.searchValue = this.$route.query.search;
   },
 
   watch: {
     '$route' () {
-      this.initManagerList();
+      this.initNormalList();
     },
   },
 
@@ -119,24 +97,48 @@ export default {
       });
     },
 
-    async initManagerList() {
+    async initNormalList() {
       // const route = this.$route.query;
       const rows = [];
       for(let i = 0; i < 10; i++) {
         const data = {
           id: i + 1,
           no: i + 1,
-          email: 'tskim@hnmcorp.kr',
-          logins: ['kakao', 'google', 'naver'],
-          name: `${i + 1}번째 강사`,
+          nick: 'testID',
+          name: `${i + 1}번째사람`,
+          gender: '남',
+          birth: '2020/12/13',
+          email: 'test@naver.com',
           phone: '010-1234-5678',
-          sortation: '강사',
-          state: '사용중',
-          signUpDate: '2020.10.29',
-          recentLogin: '2020.10.29 12:34:56',
         };
         rows.push(data);
       }
+
+      // const route = this.$route.query;
+      // const queryString = `${route.opt}=${route.search}&page=${route.page}&size=${route.size}`;
+      // const apiResult = await API.getUsers(queryString);
+      //
+      // if(apiResult.status === 200) {
+      //   const data = apiResult.data;
+      //   console.log(data);
+      //   data.forEach((item, idx) => {
+      //     const row = {
+      //       id: idx + 1,
+      //       no: idx + 1,
+      //       email: 'tskim@hnmcorp.kr',
+      //       logins: ['kakao', 'google', 'naver'],
+      //       name: `${idx + 1}번째사람`,
+      //       phone: '010-1234-5678',
+      //       pets: '1/1/2',
+      //       state: '사용중',
+      //       signUpDate: '2020.10.29',
+      //       recentLogin: '2020.10.29 12:34:56',
+      //     };
+      //     rows.push(row);
+      //   });
+      // } else {
+      //   console.log(apiResult.response);
+      // }
 
       this.rows = rows;
     },
@@ -170,15 +172,26 @@ export default {
       if (targetRow !== null) {
         if (targetRow.id) {
           this.$router.push({
-            name: 'managerDetail',
+            name: 'cafeStoryDetail',
             params: { id: targetRow.id },
           });
         }
       }
     },
 
+    onClickWithdrawal(targetRow) {
+      console.log(targetRow);
+      this.msg = '탈퇴시키겠습니까?';
+      this.confirmMethod = this.withdrawalUser;
+      this.isConfirm = true;
+    },
+
     closeConfirm() {
       this.isConfirm = false;
+    },
+
+    withdrawalUser() {
+      console.log('user withdrawalUser');
     },
   },
 };

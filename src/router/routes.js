@@ -10,6 +10,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: '/find-password',
     component: () => import('layouts/MainLayout.vue'),
@@ -21,6 +22,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: '/login',
     component: () => import('layouts/MainLayout.vue'),
@@ -32,6 +34,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: '/my-page',
     component: () => import('layouts/MainLayout.vue'),
@@ -43,6 +46,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: '/member',
     component: () => import('layouts/MainLayout.vue'),
@@ -66,52 +70,6 @@ const routes = [
             name: 'normalDetail',
             path: 'detail/:id',
             component: () => import('pages/Member/Normal/Detail.vue'),
-          },
-        ],
-      },
-      {
-        name: 'dormant',
-        path: 'dormant',
-        component: () => import('pages/Member/Dormant/Dormant.vue'),
-        children: [
-          {
-            name: 'dormantList',
-            path: 'list',
-            component: () => import('pages/Member/Dormant/List.vue'),
-          },
-        ],
-      },
-      {
-        name: 'withdrawal',
-        path: 'withdrawal',
-        component: () => import('pages/Member/Withdrawal/Withdrawal.vue'),
-        children: [
-          {
-            name: 'withdrawalList',
-            path: 'list',
-            component: () => import('pages/Member/Withdrawal/List.vue'),
-          },
-        ],
-      },
-      {
-        name: 'manager',
-        path: 'manager',
-        component: () => import('pages/Member/Manager/Manager.vue'),
-        children: [
-          {
-            name: 'managerList',
-            path: 'list',
-            component: () => import('pages/Member/Manager/List.vue'),
-          },
-          {
-            name: 'managerAdd',
-            path: 'add',
-            component: () => import('pages/Member/Manager/Add.vue'),
-          },
-          {
-            name: 'managerDetail',
-            path: 'detail/:id',
-            component: () => import('pages/Member/Manager/Detail.vue'),
           },
         ],
       },
@@ -141,33 +99,53 @@ const routes = [
   },
 
   {
-    path: '/about',
+    path: '/cafe-info',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        name: 'weedleAcademy',
-        path: 'weedleAcademy',
-        component: () => import('pages/About/WeedleAcademy/WeedleAcademy.vue'),
+        name: 'cafeNormalInfo',
+        path: 'info',
+        component: () => import('pages/CafeInfo/Normal/Normal.vue'),
       },
       {
-        name: 'weedleApp',
-        path: 'weedleApp',
-        component: () => import('pages/About/WeedleApp/WeedleApp.vue'),
+        name: 'statistics',
+        path: 'statistics',
+        component: () => import('pages/CafeInfo/Statistics/Statistics.vue'),
+      },
+    ],
+  },
+
+  {
+    path: '/cafe-story',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        name: 'cafeStoryUpload',
+        path: 'upload',
+        component: () => import('pages/CafeStory/Upload/Upload.vue'),
+
       },
       {
-        name: 'company',
-        path: 'company',
-        component: () => import('pages/About/Company/Company.vue'),
+        name: 'cafeStoryList',
+        path: 'list',
+        component: () => import('pages/CafeStory/List/List.vue'),
       },
       {
-        name: 'termsOfUse',
-        path: 'termsOfUse',
-        component: () => import('pages/About/TermsOfUse/TermsOfUse.vue'),
+        name: 'cafeStoryDetail',
+        path: 'detail:id',
+        component: () => import('pages/CafeStory/Detail/Detail.vue'),
       },
+    ],
+  },
+
+  {
+    path: '/cafe-review',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
       {
-        name: 'personalInformation',
-        path: 'personalInformation',
-        component: () => import('pages/About/PersonalInformation/PersonalInformation.vue'),
+        name: 'reviewList',
+        path: 'list',
+        component: () => import('pages/Review/List/List.vue'),
       },
     ],
   },

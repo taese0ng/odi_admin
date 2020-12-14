@@ -6,9 +6,6 @@
       :columns="columns"
       row-key="id"
       selection="multiple"
-      hide-selected-banner
-      hide-pagination
-      :pagination.sync="getOptions"
       :selected.sync="selectedItems"
       @update:selected="onClickSelection"
       @row-click="onClickTableRow"
@@ -16,19 +13,31 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td>
-            <q-checkbox color="grey-8" v-model="props.selected"/>
+            <q-checkbox color="grey-8" v-model="props.selected" />
           </q-td>
           <template v-for="(item, keyName) in props.row">
             <template v-if="keyName !== 'id'">
               <q-td :key="keyName" class="table__td text-center">
                 <template v-if="keyName === 'logins'">
                   <template v-for="img in item">
-                    <q-img :key="img" v-if="img === 'naver'" :src="naverIcon"
-                           style="height: 20px; width: 20px"/>
-                    <q-img :key="img" v-if="img === 'kakao'" :src="kakaoIcon"
-                           style="height: 20px; width: 20px"/>
-                    <q-img :key="img" v-if="img === 'google'" :src="googleIcon"
-                           style="height: 20px; width: 20px"/>
+                    <q-img
+                      :key="img"
+                      v-if="img === 'naver'"
+                      :src="naverIcon"
+                      style="height: 20px; width: 20px"
+                    />
+                    <q-img
+                      :key="img"
+                      v-if="img === 'kakao'"
+                      :src="kakaoIcon"
+                      style="height: 20px; width: 20px"
+                    />
+                    <q-img
+                      :key="img"
+                      v-if="img === 'google'"
+                      :src="googleIcon"
+                      style="height: 20px; width: 20px"
+                    />
                   </template>
                 </template>
 
@@ -40,20 +49,43 @@
           </template>
           <q-td class="text-center">
             <template v-if="modifyBtn">
-              <q-btn color="blue-grey-9" class="q-px-sm q-mr-xs" dense label="수정" @click="onClickModify(props.row)"/>
+              <q-btn
+                color="blue-grey-9"
+                class="q-px-sm q-mr-xs"
+                dense
+                label="수정"
+                @click="onClickModify(props.row)"
+              />
             </template>
 
             <template v-if="unlockBtn">
-              <q-btn color="blue-grey-9" class="q-px-sm q-mr-xs" dense label="철회" @click="onClickUnlock(props.row)"/>
+              <q-btn
+                color="blue-grey-9"
+                class="q-px-sm q-mr-xs"
+                dense
+                label="철회"
+                @click="onClickUnlock(props.row)"
+              />
             </template>
 
             <template v-if="withdrawalBtn">
-              <q-btn color="red-6" class="q-px-sm q-mr-xs" dense label="탈퇴"
-                     @click="onClickWithdrawal(props.row)"/>
+              <q-btn
+                color="red-6"
+                class="q-px-sm q-mr-xs"
+                dense
+                label="탈퇴"
+                @click="onClickWithdrawal(props.row)"
+              />
             </template>
 
             <template v-if="deleteBtn">
-              <q-btn color="red-6" class="q-px-sm" dense label="삭제" @click="onClickDelete(props.row)"/>
+              <q-btn
+                color="red-6"
+                class="q-px-sm"
+                dense
+                label="삭제"
+                @click="onClickDelete(props.row)"
+              />
             </template>
           </q-td>
         </q-tr>
@@ -61,12 +93,11 @@
 
       <template v-slot:no-data="{ icon, message, filter }">
         <div class="full-width row flex-center q-gutter-sm">
-          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon"/>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
           <span>데이터가 없습니다.</span>
         </div>
       </template>
     </q-table>
-
   </div>
 </template>
 
@@ -111,32 +142,18 @@ export default {
       type: Array,
       default: [],
     },
-    paginationOptions: {
-      type: Object,
-      default: () => {
-        return {
-          // sortBy: 'desc',
-          descending: false,
-          page: 1,
-          rowsPerPage: 10,
-          // rowsNumber: xx if getting data from a server
-        };
-      },
-    },
   },
 
   computed: {
     getOptions: {
-      get () {
+      get() {
         return this.paginationOptions;
       },
-      set () {
-
-      },
+      set() {},
     },
   },
 
-  data () {
+  data() {
     return {
       selectedItems: [],
       itemNo: Number(1),
@@ -147,7 +164,7 @@ export default {
   },
 
   methods: {
-    onClickTableRow (e, row, index) {
+    onClickTableRow(e, row, index) {
       // const resultIndex = this.selectedItems.findIndex((item) => item.id === row.id);
       //
       // if (resultIndex === -1) {
@@ -157,23 +174,23 @@ export default {
       // }
     },
 
-    onClickSelection () {
+    onClickSelection() {
       this.$emit('selection', this.selectedItems);
     },
 
-    onClickUnlock (targetRow) {
+    onClickUnlock(targetRow) {
       this.$emit('onClickUnlock', targetRow);
     },
 
-    onClickModify (targetRow) {
+    onClickModify(targetRow) {
       this.$emit('onClickModify', targetRow);
     },
 
-    onClickDelete (targetRow) {
+    onClickDelete(targetRow) {
       this.$emit('onClickDelete', targetRow);
     },
 
-    onClickWithdrawal (targetRow) {
+    onClickWithdrawal(targetRow) {
       this.$emit('onClickWithdrawal', targetRow);
     },
   },
@@ -181,7 +198,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './Table.scss';
+@import "./Table.scss";
 </style>
 
 <!-- 예시 -->
