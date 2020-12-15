@@ -5,13 +5,76 @@
       <q-card flat bordered class="q-mt-md q-mx-auto">
         <q-card-section>
           <div class="row q-mb-md">
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              카페 노출수 카운트
+            </div>
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              {{exposure}}
+            </div>
+          </div>
+
+          <div class="row q-mb-md">
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              카페 조회수
+            </div>
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              {{view}}
+            </div>
+          </div>
+
+          <div class="row q-mb-md">
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              카페 좋아요 수
+            </div>
+            <div class="col-12 col-sm-6 text-h5 text-bold q-mb-lg">
+              {{like}}
+            </div>
+          </div>
+
+          <div class="row q-mb-md">
+            <div class="col-12 text-h5 text-bold q-mb-lg">카페 조회 회원의 성별, 나이</div>
             <div class="col-12">
-              <div class='text-h5 text-bold q-mb-lg'>카페 조회 회원의 성별 나이</div>
-              <div class='row justify-around'>
-                <PieChart :chartData="genderOfViewer.chartData" 
-                  :options="genderOfViewer.options"/>
-                <PieChart :chartData="ageOfViewer.chartData" 
-                  :options="ageOfViewer.options"/>
+              <div class='row'>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="genderOfViewer.chartData" 
+                    :options="genderOfViewer.options"/>
+                </div>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="ageOfViewer.chartData" 
+                    :options="ageOfViewer.options"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row q-mb-md">
+            <div class="col-12 text-h5 text-bold q-mb-lg">좋아요 누른 회원의 성별, 나이</div>
+            <div class="col-12">
+              <div class='row'>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="genderOfViewer.chartData" 
+                    :options="genderOfViewer.options"/>
+                </div>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="ageOfViewer.chartData" 
+                    :options="ageOfViewer.options"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row q-mb-md">
+            <div class="col-12 text-h5 text-bold q-mb-lg">쿠폰 사용 회원의 성별, 나이</div>
+            <div class="col-12">
+              <div class='row'>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="genderOfViewer.chartData" 
+                    :options="genderOfViewer.options"/>
+                </div>
+                <div class='col-12 col-md-6 q-pa-md'>
+                  <PieChart :chartData="ageOfViewer.chartData" 
+                    :options="ageOfViewer.options"/>
+                </div>
               </div>
             </div>
           </div>
@@ -35,6 +98,9 @@ export default {
   data() {
     return {
       title: '카페 관련 통계',
+      exposure: 100,
+      view: 100,
+      like: 100,
 
       genderOfViewer: {
         chartData: {
@@ -43,11 +109,11 @@ export default {
             borderWidth: 1,
             borderColor: [
               'rgba(255,99,132,1)',
-              'rgba(54, 162, 235, 1)',        
+              'rgba(54, 162, 235, 1)',
             ],
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',              
+              'rgba(54, 162, 235, 0.2)',
             ],
             data: [1000, 500],
           }],
@@ -72,14 +138,14 @@ export default {
               'rgba(54, 162, 235, 1)',     
               'rgba(255, 206, 86, 1)',
               'rgba(75, 192, 192, 1)',
-              'rightGrey',    
+              'rightGrey',
             ],
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',   
               'rgba(255, 206, 86, 0.2)',
               'rgba(75, 192, 192, 0.2)',
-              'rightGrey',           
+              'rightGrey',
             ],
             data: [1000, 500, 300, 200, 800],
           }],
