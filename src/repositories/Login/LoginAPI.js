@@ -4,13 +4,8 @@ import axios from 'src/utils/axiosUtils';
 // const accessToken = Cookies.get('access_token');
 // const headers = { headers: { Authorization: `Bearer ${accessToken}` } };
 
-// About WeedleAcademy CRUD 기능
 export default ({
-  readContents() {
-    return axios.get('/v3/contents');
-  },
-
-  addContents(data) { // client 추가
-    return axios.post('/v3/contents', data);
+  login(body) {
+    return axios.post('/auth/login', body);
   },
 });

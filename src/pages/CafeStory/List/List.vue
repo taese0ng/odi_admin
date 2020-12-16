@@ -21,7 +21,7 @@
 <script>
 import Header from 'components/Header/Header';
 import SearchBar from 'components/SearchBar/SearchBar';
-import Table from 'components/Table/MemberTable';
+import Table from 'components/Table/Table';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import API from 'src/repositories/Member/NormalAPI';

@@ -4,7 +4,7 @@
     <q-btn
       v-if="subBtn.title"
       @click="subBtn.method"
-      rounded color="blue-grey-9"
+      rounded color="brown-13"
       class="q-px-md q-my-xs" size="md"
       no-caps :label="subBtn.title"/>
     <q-separator/>

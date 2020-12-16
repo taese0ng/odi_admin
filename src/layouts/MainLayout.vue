@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff" class="container">
-    <q-header elevated class="bg-blue-grey-10 container">
+    <q-header elevated class="bg-brown-13 container">
       <q-toolbar>
         <q-btn v-if="getLoginInfo.isLogin" flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title>{{ siteTitle }}</q-toolbar-title>
@@ -17,7 +17,7 @@
       :width="300"
       :breakpoint="500"
       bordered
-      content-class="bg-grey-3"
+      content-class="bg-white"
     >
       <!-- show-if-above 없애야 닫힌 창으로 먼저 나옴 -->
       <q-scroll-area class="fit">
@@ -37,13 +37,13 @@
           </q-item>
 
           <q-slide-transition>
-            <q-list v-show="menuItem.open" class="bg-grey-4">
+            <q-list v-show="menuItem.open" class="bg-brown-1">
               <q-item
                 v-for="(subMenuItem, idx) in menuItem.subMenu"
                 :key="idx"
                 :to="subMenuItem.path"
                 clickable
-                active-class="text-indigo-14"
+                active-class="text-brown-13"
                 :active="subMenuItem.name === $route.matched[1].name"
               >
                 <q-item-section style="padding-left: 12px">
@@ -57,7 +57,7 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-    <q-page-container>
+    <q-page-container class="bg-origin">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -75,7 +75,7 @@ const menuList = [
     open: false,
     subMenu: [
       {
-        label: '회원정보',
+        label: '마이페이지',
         name: 'myPage',
         path: { name: 'myPage' },
       },

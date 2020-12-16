@@ -9,7 +9,7 @@
                dense class="q-pl-md col-9"/>
     </div>
     <div class=" col-12 col-sm-2 row items-center">
-      <q-btn type="submit" class="self-center full-width" color="blue-grey-9" icon="search" label="검색"
+      <q-btn type="submit" class="self-center full-width" color="brown-13" icon="search" label="검색"
              @click.prevent="$emit('onClickSearch')"/>
     </div>
   </q-form>

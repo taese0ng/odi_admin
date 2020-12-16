@@ -18,30 +18,7 @@
           <template v-for="(item, keyName) in props.row">
             <template v-if="keyName !== 'id'">
               <q-td :key="keyName" class="table__td text-center">
-                <template v-if="keyName === 'logins'">
-                  <template v-for="img in item">
-                    <q-img
-                      :key="img"
-                      v-if="img === 'naver'"
-                      :src="naverIcon"
-                      style="height: 20px; width: 20px"
-                    />
-                    <q-img
-                      :key="img"
-                      v-if="img === 'kakao'"
-                      :src="kakaoIcon"
-                      style="height: 20px; width: 20px"
-                    />
-                    <q-img
-                      :key="img"
-                      v-if="img === 'google'"
-                      :src="googleIcon"
-                      style="height: 20px; width: 20px"
-                    />
-                  </template>
-                </template>
-
-                <template v-else>
+                <template>
                   <p class="q-ma-none table__td--ellipsis">{{ item }}</p>
                 </template>
               </q-td>
@@ -50,7 +27,7 @@
           <q-td class="text-center">
             <template v-if="modifyBtn">
               <q-btn
-                color="blue-grey-9"
+                color="brown-13"
                 class="q-px-sm q-mr-xs"
                 dense
                 label="수정"
@@ -60,7 +37,7 @@
 
             <template v-if="unlockBtn">
               <q-btn
-                color="blue-grey-9"
+                color="brown-13"
                 class="q-px-sm q-mr-xs"
                 dense
                 label="철회"
@@ -102,12 +79,8 @@
 </template>
 
 <script>
-import kakaoIcon from 'assets/icon/kakaoIcon.png';
-import naverIcon from 'assets/icon/naverIcon.png';
-import googleIcon from 'assets/icon/googleIcon.png';
-
 export default {
-  name: 'MemberTable',
+  name: 'Table',
 
   props: {
     title: {
@@ -157,9 +130,6 @@ export default {
     return {
       selectedItems: [],
       itemNo: Number(1),
-      kakaoIcon: kakaoIcon,
-      naverIcon: naverIcon,
-      googleIcon: googleIcon,
     };
   },
 

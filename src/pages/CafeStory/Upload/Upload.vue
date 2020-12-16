@@ -60,6 +60,12 @@
                     </div>
                 </div>
             </q-card-section>
+
+            <q-card-actions>
+                <div class="col-12 q-px-sm q-mb-md">
+                    <q-btn class="full-width" color="brown-13" label="등록"/>
+                </div>
+            </q-card-actions>
         </q-card>
 
     </q-page>

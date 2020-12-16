@@ -55,8 +55,45 @@
                 </div>
               </div>
             </div>
-
           </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="row q-col-gutter-x-sm items-center">
+              <div class="col-3 necessary q-pl-md">
+                생년월일
+              </div>
+              <div class="col-9">
+                <q-input v-model="birth" filled type="date" dense color="brown-13"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="row q-col-gutter-y-sm">
+              <div class="col-12 text-center" v-if="imgSrc">
+                  <q-img :src="imgSrc" style="max-width:500px"/>
+              </div>
+              <div class="col-12">
+                  <q-file
+                      dense
+                      color="blue-grey-9"
+                      v-model="img"
+                      filled
+                      label-slot
+                      accept=".jpg, image/*"
+                      @input="inputImg"
+                      @rejected="onRejected"
+                  >
+                    <template v-slot:label>
+                      <div class="necessary">
+                        사업자등록증
+                      </div>
+                    </template>
+                  </q-file>
+              </div>
+            </div>
+          </div>
+
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="businessNum"
@@ -76,21 +113,21 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-select outlined v-model="selectedTax" :options="taxClassification" 
-              label="과세구분" dense emit-value map-options />
+              label="과세구분" color="brown-13" dense emit-value map-options />
             </div>
           </div>
 
           <div class="col-12 q-mb-md">
             <div class="text-grey">
-              <q-input label-slot filled dense v-model="businessCondition"
-              color="blue-grey-9" ref="businessCondition" hint="호프, 주점 도매업은 가입할 수 없습니다.">
+              <q-input label-slot filled dense v-model="businessType"
+              color="blue-grey-9" ref="businessType" hint="호프, 주점 도매업은 가입할 수 없습니다.">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
                     업태 (영어나 한자로 써있으면 소리 나는 대로 한글로 입력해주세요)
                   </div>
                 </template>
-                <template v-if="businessCondition" v-slot:append>
-                  <q-icon name="close" @click.stop="businessCondition = ''" class="cursor-pointer"/>
+                <template v-if="businessType" v-slot:append>
+                  <q-icon name="close" @click.stop="businessType = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
             </div>
@@ -171,15 +208,15 @@
 
         <div class="row q-mb-md bg-grey-2 items-center q-pl-xs">
             <div class="col-12">
-                <q-checkbox keep-color color="blue-grey-9" v-model="agreeAD"
+                <q-checkbox keep-color color="brown-13" v-model="agreeAD"
                     label="광고 이용 여부" class="q-mr-lg"/>
             </div>
         </div>
       </q-card-section>
 
       <q-card-actions>         
-          <q-btn color="blue-grey-8" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
-          <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
+          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
+          <q-btn color="red-6" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 
     </q-card>
@@ -196,6 +233,7 @@ import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
+import API from 'src/repositories/SignUp/SignUpAPI';
 
 export default {
   name: 'SignUp',
@@ -218,8 +256,9 @@ export default {
       password: '',
       passwordConfirm: '',
       phone: '',
-      businessCondition: '',
+      businessType: '',
       businessEvent: '',
+      birth: null,
 
       isDialog: false,
       isConfirm: false,
@@ -229,13 +268,16 @@ export default {
 
       selectedTax: null,
       taxClassification: [
-        { label: '일반과세자', value: 'normal' }, 
-        { label: '간이과세자', value: 'simple' }, 
-        { label: '법인과세자', value: 'artificial' }, 
-        { label: '부가가치세 면세사업자', value: 'value_added' }, 
-        { label: '면세법인 사업자', value: 'tax_free' }],
+        { label: '일반과세자', value: '일반과세자' }, 
+        { label: '간이과세자', value: '간이과세자' }, 
+        { label: '법인과세자', value: '법인과세자' }, 
+        { label: '부가가치세 면세사업자', value: '부가가치세 면세사업자' }, 
+        { label: '면세법인 사업자', value: '면세법인 사업자' }],
     
       agreeAD: false,
+
+      img: null,
+      imgSrc: null,
     };
   },
 
@@ -246,14 +288,14 @@ export default {
       this.isConfirm = true;
     },
 
-    createAdmin() {
+    async createAdmin() {
       if(!this.id) {
         this.msg = 'ID를 입력해주세요';
         this.isAlert = true;
       } else if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
         this.msg = '비밀번호를 확인해주세요!';
         this.isAlert = true;
-      }else if(!this.email) {
+      } else if(!this.email) {
         this.msg = '이메일을 입력해주세요!';
         this.isAlert = true;
       } else if(!this.name) {
@@ -262,11 +304,48 @@ export default {
       } else if(!this.phone) {
         this.msg = '휴대전화를 입력해주세요!';
         this.isAlert = true;
-      } else if(!this.address1 || !this.zipCode) {
-        this.msg = '주소를 입력해주세요!';
+      } else if(!this.selectedTax) {
+        this.msg = '과세구분을 확인해주세요!';
+        this.isAlert = true;
+      } else if(!this.businessNum) {
+        this.msg = '사업자읃록번호를 확인해주세요!';
+        this.isAlert = true;
+      } else if(!this.businessType) {
+        this.msg = '업태를 확인해주세요!';
+        this.isAlert = true;
+      } else if(!this.businessEvent) {
+        this.msg = '종목을 확인해주세요!';
+        this.isAlert = true;
+      } else if(!this.img) {
+        this.msg = '사업자등록증을 확인해주세요!';
+        this.isAlert = true;
+      } else if(!this.birth) {
+        this.msg = '생년월일을 확인해주세요!';
         this.isAlert = true;
       } else {
-        console.log('created!');
+        const body = {
+          reg_type: 'business',
+          id: this.id,
+          password: this.password,
+          email: this.email,
+          nick_name: this.name,
+          is_agree: '',
+          phonenum: this.phone,
+          birth: this.birth.replace(/-/gi, ''),
+          gender: '',
+          business_type: this.businessType,
+          business_type_detail: this.businessEvent,
+          business_reg_num: this.businessNum,
+          tax_classification: this.selectedTax,
+          is_ad: this.agreeAD,
+          ref_file: this.img,
+        };
+        const apiResult = await API.signup();
+        if(apiResult.status === 201) {
+          console.log(apiResult);
+        } else {
+          console.log(apiResult.response);
+        }
       }
     },
 
@@ -278,31 +357,21 @@ export default {
       this.isConfirm = false;
     },
 
-    createPetsRow () {
-      const row = [];
-
-      for (let i = 0; i < this.petsNum; i++) {
-        if (this.petsRow.length > i) {
-          row.push(this.petsRow[i]);
-        } else {
-          const data =
-            {
-              petsType: null,
-              petsGender: null,
-              neutralization: false,
-              petsVariety: '',
-              birthYear: '',
-              birthMonth: '',
-            };
-          row.push(data);
-        }
-      }
-
-      this.petsRow = row;
-    },
-
     onClickAddressSearch () {
       console.log('주소검색');
+    },
+
+    onRejected (rejectedEntries) {
+      // Notify plugin needs to be installed
+      // https://quasar.dev/quasar-plugins/notify#Installation
+      this.$q.notify({
+        type: 'negative',
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
+      });
+    },
+
+    inputImg() {
+      this.imgSrc = URL.createObjectURL(this.img);
     },
   },
 };

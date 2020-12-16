@@ -76,7 +76,7 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-select outlined v-model="selectedTax" :options="taxClassification" 
-              label="과세구분" dense emit-value map-options />
+              label="과세구분" color="brown-13" dense emit-value map-options />
             </div>
           </div>
 
@@ -171,15 +171,15 @@
 
         <div class="row q-mb-md bg-grey-2 items-center q-pl-xs">
             <div class="col-12">
-                <q-checkbox keep-color color="blue-grey-9" v-model="agreeAD"
+                <q-checkbox keep-color color="brown-13" v-model="agreeAD"
                     label="광고 이용 여부" class="q-mr-lg"/>
             </div>
         </div>
       </q-card-section>
 
       <q-card-actions>
-          <q-btn color="red" class="full-width q-mb-sm" @click="onClickWithdrawal" label="회원탈퇴"/>            
-          <q-btn color="blue-grey-8" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
+          <q-btn color="red-6" class="full-width q-mb-sm" @click="onClickWithdrawal" label="회원탈퇴"/>            
+          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
           <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 

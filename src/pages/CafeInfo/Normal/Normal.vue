@@ -248,8 +248,8 @@
       </q-card-section>
 
       <q-card-actions>
-          <q-btn color="blue-grey-8" class="full-width q-mb-sm" @click="onClickSave" label="저장"/>
-          <q-btn color="red" class="full-width" @click="onClickCancel" label="취소"/>
+          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickSave" label="저장"/>
+          <q-btn color="red-6" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 
     </q-card>

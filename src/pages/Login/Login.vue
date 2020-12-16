@@ -1,31 +1,36 @@
 <template>
-  <q-page padding class="q-pt-xl container row items-center login">
+  <q-page padding class="q-pt-xl container row items-center">
     <div class="col-12 row justify-center items-center">
       <div class="col-10 col-md-6">
         <q-card class="my-card q-pa-md maxContainer-lg q-mx-auto">
           <q-card-section>
-            <div class="text-h4 text-center q-pb-md">odi Admin Web</div>
+            <div class="text-h4 text-center q-pb-xl">
+              <q-img :src="logoImg" style="width:50%; max-width:400px; min-width:200px"/>
+            </div>
             <div class="row justify-center items-center">
               <q-form class="col-12">
-                <q-input style="padding: 4px 0" label="ID" standout="bg-indigo-4 text-white" v-model="userId" ref="id"/>
-                <q-input style="padding: 4px 0" label="Password" type="password" standout="bg-indigo-4 text-white"
+                <q-input style="padding: 4px 0" label="ID" standout="bg-brown-3 text-white" v-model="userId" ref="id"/>
+                <q-input style="padding: 4px 0" label="Password" type="password" standout="bg-brown-3 text-white"
                          v-model="userPassword" ref="pw"
                          @keyup.enter="onClickLogin"/>
-                <q-btn outline style="margin-top: 8px; font-weight: 600" color="blue-gray-8" label="로그인"
+                <q-btn style="margin-top: 28px; font-weight: 600" color="brown-13" label="로그인"
                        class="full-width" @click="onClickLogin"/>
+                
+              </q-form>
+              <div class="col-12">
                 <router-link :to="{name:'signUp'}">
                   <template>
                     <q-btn outline style="margin-top: 8px; font-weight: 600" 
-                     class="full-width" color="blue-gray-8" label="회원가입"/>
+                    class="full-width" color="blue-gray-8" label="회원가입"/>
                   </template>
                 </router-link>
                 <router-link :to="{name:'findPassword'}">
                   <template>
                     <q-btn outline style="margin-top: 8px; font-weight: 600" 
-                     class="full-width" color="blue-gray-8" label="비밀번호찾기"/>
+                    class="full-width" color="blue-gray-8" label="비밀번호찾기"/>
                   </template>
                 </router-link>
-              </q-form>
+              </div>
             </div>
           </q-card-section>
         </q-card>
@@ -40,6 +45,7 @@
 import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Alert from 'components/Alert/Alert';
 import { Cookies } from'quasar';
+import API from 'src/repositories/Login/LoginAPI';
 
 export default {
   name: 'Login',
@@ -53,6 +59,7 @@ export default {
       userPassword: '',
       isAlert: false,
       msg: '',
+      logoImg: require('assets/odi_logo.png'),
     };
   },
   methods: {
@@ -69,16 +76,27 @@ export default {
         this.isAlert = true;
         return false;
       } else{
-        const option = {
-          expires: '10h',
-          path: '/',
+        const body = {
+          reg_type: 'business',
+          id: this.userId,
+          password: this.userPassword,
         };
-        Cookies.set('access_token', 'token', option);
-        this.$store.commit('setLoginName', { name: 'test' });
-        this.$router.push({ 
-          name: 'normalList', 
-          query: { opt: 'name', search: '', page: 1, size: 10 }, 
-        });
+        const apiResult = await API.login(body);
+
+        if(apiResult.status === 200) {
+          console.log(apiResult.data);
+        } else {
+          console.log(apiResult.response);
+        }
+        // const option = {
+        //   expires: '10h',
+        //   path: '/',
+        // };
+        // Cookies.set('access_token', 'token', option);
+        // this.$store.commit('setLoginName', { name: 'test' });
+        // this.$router.push({ 
+        //   name: 'statistics', 
+        // });
       }
       // const apiResult = await API.login();
       // console.log(apiResult);
@@ -99,8 +117,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './Login.scss';
-
 a{
   text-decoration: none;
   color: black;

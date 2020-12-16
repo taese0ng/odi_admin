@@ -48,57 +48,6 @@ const routes = [
   },
 
   {
-    path: '/member',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {
-        name: 'normal',
-        path: 'normal',
-        component: () => import('pages/Member/Normal/Normal'),
-        children: [
-          {
-            name: 'normalList',
-            path: 'list',
-            component: () => import('pages/Member/Normal/List.vue'),
-          },
-          {
-            name: 'normalAdd',
-            path: 'add',
-            component: () => import('pages/Member/Normal/Add.vue'),
-          },
-          {
-            name: 'normalDetail',
-            path: 'detail/:id',
-            component: () => import('pages/Member/Normal/Detail.vue'),
-          },
-        ],
-      },
-      {
-        name: 'admin',
-        path: 'admin',
-        component: () => import('pages/Member/Admin/Admin.vue'),
-        children: [
-          {
-            name: 'adminList',
-            path: 'list',
-            component: () => import('pages/Member/Admin/List.vue'),
-          },
-          {
-            name: 'adminAdd',
-            path: 'add',
-            component: () => import('pages/Member/Admin/Add.vue'),
-          },
-          {
-            name: 'adminDetail',
-            path: 'detail/:id',
-            component: () => import('pages/Member/Admin/Detail.vue'),
-          },
-        ],
-      },
-    ],
-  },
-
-  {
     path: '/cafe-info',
     component: () => import('layouts/MainLayout.vue'),
     children: [
