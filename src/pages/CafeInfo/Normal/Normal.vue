@@ -56,18 +56,20 @@
           </div>
     
           <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="address"
-              color="blue-grey-9" ref="address">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    주소
-                  </div>
-                </template>
-                <template v-if="address" v-slot:append>
-                  <q-icon name="close" @click.stop="address = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
+            <div class="row q-col-gutter-sm">
+              <div class="col-3">
+                <q-btn color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
+              </div>
+              <div class="col-9 text-grey">
+                <q-input label-slot filled dense v-model="address"
+                color="blue-grey-9" ref="address" disable>
+                  <template v-slot:label>
+                    <div class="row all-pointer-events items-center necessary">
+                      주소
+                    </div>
+                  </template>
+                </q-input>
+              </div>
             </div>
           </div>
 
@@ -257,6 +259,7 @@
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
     <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
     <Dialog :isOpen="isDialog" @closeDialog="isDialog=false"/>
+    <DaumPostcode :isPostcode="isPostcode" @hide="isPostcode=false" @complete="(e)=>getPostInfo(e)"/>
   </q-page>
 </template>
 
@@ -266,6 +269,7 @@ import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
+import DaumPostcode from 'components/Dialog/DaumPostcodeDialog';
 
 export default {
   name: 'CafeNormalInfo',
@@ -275,6 +279,7 @@ export default {
     Confirm,
     Alert,
     Dialog,
+    DaumPostcode,
   },
 
   data () {
@@ -299,6 +304,7 @@ export default {
       filesImages: null,
 
       isDialog: false,
+      isPostcode: false,
       isConfirm: false,
       isAlert: false,
       msg: '',
@@ -396,6 +402,16 @@ export default {
 
     removeChip(item) {
       this.hashTags.splice(this.hashTags.indexOf(item), 1);
+    },
+
+    onClickAddressSearch() {
+      this.isPostcode = true;
+    },
+
+    getPostInfo(info) {
+      // console.log(info);
+      this.isPostcode = false;
+      this.address = info.roadAddress;
     },
   },
 };

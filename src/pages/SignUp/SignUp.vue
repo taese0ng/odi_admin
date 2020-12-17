@@ -329,10 +329,8 @@ export default {
           password: this.password,
           email: this.email,
           nick_name: this.name,
-          is_agree: '',
           phonenum: this.phone,
           birth: this.birth.replace(/-/gi, ''),
-          gender: '',
           business_type: this.businessType,
           business_type_detail: this.businessEvent,
           business_reg_num: this.businessNum,
@@ -341,10 +339,19 @@ export default {
           ref_file: this.img,
         };
         const apiResult = await API.signup();
-        if(apiResult.status === 201) {
-          console.log(apiResult);
+        // console.log(apiResult);
+        if(apiResult.status === 200) {
+          // console.log(apiResult);
+          if(apiResult.statusText === 'OK') {
+            this.$router.push({ name: 'login' });
+          } else {
+            this.msg = '회원가입이 실패하였습니다.';
+            this.isAlert = true;
+          }
         } else {
           console.log(apiResult.response);
+          this.msg = '회원가입이 실패하였습니다.';
+          this.isAlert = true;
         }
       }
     },

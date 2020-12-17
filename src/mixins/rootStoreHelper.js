@@ -3,15 +3,21 @@ import { mapGetters, mapActions, mapMutations, mapState } from 'vuex';
 export default {
 
   computed: {
-    ...mapState([]),
+    ...mapState(['isLogin']),
 
-    ...mapGetters([]),
+    ...mapGetters({
+      getLoginInfo: 'getLoginInfo',
+    }),
   },
 
   methods: {
-    ...mapActions([]),
+    ...mapActions({
+      dispatchIsLoginAction: 'isLoginAction',
+    }),
 
-    ...mapMutations([]),
+    ...mapMutations({
+      setLoginName: 'setLoginName',
+    }),
   },
 
 };

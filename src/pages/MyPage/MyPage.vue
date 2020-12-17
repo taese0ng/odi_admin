@@ -5,6 +5,32 @@
     <q-card flat bordered class="q-mt-md maxContainer-md q-mx-auto">
       <q-card-section>
         <div class="row">
+          <!-- <div class="col-12 q-mb-md">
+            <div class="row q-col-gutter-y-sm">
+              <div class="col-12 text-center" v-if="imgSrc">
+                  <q-img :src="imgSrc" style="max-width:500px"/>
+              </div>
+              <div class="col-12">
+                  <q-file
+                      dense
+                      color="blue-grey-9"
+                      v-model="img"
+                      filled
+                      label-slot
+                      accept=".jpg, image/*"
+                      @input="inputImg"
+                      @rejected="onRejected"
+                  >
+                    <template v-slot:label>
+                      <div class="necessary">
+                        프로필사진
+                      </div>
+                    </template>
+                  </q-file>
+              </div>
+            </div>
+          </div> -->
+
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="id"
@@ -20,16 +46,36 @@
               </q-input>
             </div>
           </div>
-    
-        <div class="col-12 q-mb-md">        
-          <div class="row">
-              <div class="col-6 q-pr-xs">
+
+          <div class="col-12 q-mb-md" v-if="!checkedPassword">
+            <div class="row  q-col-gutter-x-sm">
+              <div class="col-8">
+                <q-input label-slot type="password" filled dense v-model="currentPW"
+                  color="blue-grey-9" ref="currentPW">
+                  <template v-slot:label>
+                    <div class="row all-pointer-envents items-center">
+                      현재 비밀번호
+                    </div>
+                  </template>
+                </q-input>
+              </div>
+
+              <div class="col-4">
+                <q-btn label="비밀번호 수정" class="full-width" 
+                 color="blue-grey-8" @click="passwordCheck"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md" v-if="checkedPassword">        
+            <div class="row q-col-gutter-sm">
+              <div class="col-6">
                 <div class="text-grey">
                   <q-input type="password" label-slot filled dense v-model="password"
-                           color="blue-grey-9" ref="password">
+                          color="blue-grey-9" ref="password">
                     <template v-slot:label>
                       <div class="row all-pointer-events items-center necessary">
-                        비밀번호
+                        새 비밀번호
                       </div>
                     </template>
                     <template v-if="password" v-slot:append>
@@ -39,13 +85,13 @@
                 </div>
               </div>
 
-              <div class="col-6 q-pl-xs">
+              <div class="col-6">
                 <div class="text-grey">
                   <q-input type="password" label-slot filled dense v-model="passwordConfirm"
-                           color="blue-grey-9" ref="passwordConfirm">
+                          color="blue-grey-9" ref="passwordConfirm">
                     <template v-slot:label>
                       <div class="row all-pointer-events items-center necessary">
-                        비밀번호 확인
+                        새 비밀번호 확인
                       </div>
                     </template>
                     <template v-if="passwordConfirm" v-slot:append>
@@ -54,71 +100,29 @@
                   </q-input>
                 </div>
               </div>
-            </div>
 
-          </div>
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="businessNum"
-              color="blue-grey-9" ref="businessNum">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    사업자 등록번호
-                  </div>
-                </template>
-                <template v-if="businessNum" v-slot:append>
-                  <q-icon name="close" @click.stop="businessNum = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
+              <div class="col-12">
+                <q-btn label="비밀번호 수정하기" color="blue-grey-8" 
+                class="full-width" @click="modifyPassword"/>
+              </div>
             </div>
           </div>
 
           <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-select outlined v-model="selectedTax" :options="taxClassification" 
-              label="과세구분" color="brown-13" dense emit-value map-options />
+            <div class="row q-col-gutter-x-sm items-center">
+              <div class="col-3 necessary q-pl-md">
+                생년월일
+              </div>
+              <div class="col-9">
+                <q-input v-model="birth" filled type="date" dense color="brown-13"/>
+              </div>
             </div>
           </div>
-
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="businessCondition"
-              color="blue-grey-9" ref="businessCondition" hint="호프, 주점 도매업은 가입할 수 없습니다.">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    업태 (영어나 한자로 써있으면 소리 나는 대로 한글로 입력해주세요)
-                  </div>
-                </template>
-                <template v-if="businessCondition" v-slot:append>
-                  <q-icon name="close" @click.stop="businessCondition = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
-            </div>
-          </div>
-
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="businessEvent"
-              color="blue-grey-9" ref="businessEvent">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    종목 (영어나 한자로 써있으면 소리 나는 대로 한글로 입력해주세요)
-                  </div>
-                </template>
-                <template v-if="businessEvent" v-slot:append>
-                  <q-icon name="close" @click.stop="businessEvent = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
 
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="email"
-                       color="blue-grey-9" ref="email">
+                      color="blue-grey-9" ref="email">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
                     이메일
@@ -130,10 +134,6 @@
               </q-input>
             </div>
           </div>
-
-        </div>
-
-        <div class="row ">
 
           <div class="col-12 q-mb-md">
             <div class="text-grey">
@@ -167,19 +167,16 @@
             </div>
           </div>
 
-        </div>
-
-        <div class="row q-mb-md bg-grey-2 items-center q-pl-xs">
-            <div class="col-12">
-                <q-checkbox keep-color color="brown-13" v-model="agreeAD"
-                    label="광고 이용 여부" class="q-mr-lg"/>
-            </div>
+          <div class="col-12 q-mb-md bg-grey-2 items-center q-pl-xs">
+              <q-checkbox keep-color color="brown-13" v-model="agreeAD"
+                  label="광고 이용 여부" class="q-mr-lg"/>
+          </div>
         </div>
       </q-card-section>
 
       <q-card-actions>
           <q-btn color="red-6" class="full-width q-mb-sm" @click="onClickWithdrawal" label="회원탈퇴"/>            
-          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickCreate" label="회원가입"/>
+          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickModify" label="정보수정"/>
           <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 
@@ -197,6 +194,8 @@ import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
+import API from 'src/repositories/MyPage/MyPageAPI';
+import { Cookies } from'quasar';
 
 export default {
   name: 'MyPage',
@@ -212,48 +211,70 @@ export default {
     return {
       title: '마이페이지',
 
+      imgSrc: null,
+      img: null,
+
       id: '',
-      businessNum: '',
       email: '',
       name: '',
+      currentPW: '',
+      checkedPassword: false,
       password: '',
       passwordConfirm: '',
       phone: '',
-      businessCondition: '',
-      businessEvent: '',
+      birth: null,
 
       isDialog: false,
       isConfirm: false,
       isAlert: false,
       msg: '',
       confirmMethod: null,
-
-      selectedTax: null,
-      taxClassification: [
-        { label: '일반과세자', value: 'normal' }, 
-        { label: '간이과세자', value: 'simple' }, 
-        { label: '법인과세자', value: 'artificial' }, 
-        { label: '부가가치세 면세사업자', value: 'value_added' }, 
-        { label: '면세법인 사업자', value: 'tax_free' }],
     
       agreeAD: false,
     };
   },
 
+  created() {
+    this.getUserData();
+  },
+
   methods: {
-    onClickCreate () {
-      this.msg = '생성하시겠습니까?';
-      this.confirmMethod = this.createAdmin;
+    async getUserData() {
+      const apiResult = await API.getUserInfo();
+
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        if(apiResult.data.result === 'success') {
+          console.log(apiResult);
+          const data = apiResult.data;
+          this.id = data.business_id;
+          this.email = data.business_email;
+          this.name = data.business_nick_name;
+          this.phone = data.business_phone;
+          this.birth = data.business_birth.slice(0, 4) + '-' + data.business_birth.slice(4, 6) + '-' + data.business_birth.slice(6);
+          console.log(this.birth);
+        }
+      } else {
+        console.log(apiResult.response);
+        this.msg = '통신에러!';
+        this.isAlert = true;
+      }
+    },
+
+    onClickModify () {
+      this.msg = '수정하시겠습니까?';
+      this.confirmMethod = this.modifyUser;
       this.isConfirm = true;
     },
 
-    createAdmin() {
+    async modifyUser() {
       if(!this.id) {
         this.msg = 'ID를 입력해주세요';
         this.isAlert = true;
-      } else if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
-        this.msg = '비밀번호를 확인해주세요!';
-        this.isAlert = true;
+      } else if(this.checkedPassword) {
+        if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
+          this.msg = '비밀번호를 확인해주세요!';
+          this.isAlert = true;
+        }
       }else if(!this.email) {
         this.msg = '이메일을 입력해주세요!';
         this.isAlert = true;
@@ -263,11 +284,18 @@ export default {
       } else if(!this.phone) {
         this.msg = '휴대전화를 입력해주세요!';
         this.isAlert = true;
-      } else if(!this.address1 || !this.zipCode) {
-        this.msg = '주소를 입력해주세요!';
-        this.isAlert = true;
       } else {
-        console.log('created!');
+        const body = {
+          email: this.email,
+          nick_name: this.name,
+          phonenum: this.phone,
+        };
+        const apiResult = await API.modifyUser(body);
+        if(apiResult.status === 200) {
+          console.log(apiResult);
+        } else {
+          console.log(apiResult.response);
+        }
       }
     },
 
@@ -279,8 +307,73 @@ export default {
       this.isConfirm = false;
     },
 
-    onClickWithdrawal() {
+    async onClickWithdrawal() {
       console.log('탈퇴');
+      const apiResult = await API.removeAccount();
+      if(apiResult.status === 200 && apiResult.data.result === 'success') {
+        Cookies.remove('access_token');
+        Cookies.remove('userNickName');
+      } else {
+        console.log(apiResult.response);
+        this.msg = '통신에러!';
+        this.isAlert = true;
+      }
+    },
+
+    async passwordCheck() {
+      const body = {
+        user_type: 'password',
+        reg_type: 'business',
+        check_data: this.currentPW,
+      };
+
+      const apiResult = await API.checkPassword(body);
+      if(apiResult.status === 200) {
+        if(apiResult.data.result) {
+          this.checkedPassword = true;
+        } else{
+          this.msg = '비밀번호가 틀렸습니다.';
+          this.isAlert = true;
+        }
+      } else {
+        console.log(apiResult.response);
+        this.msg = '통신에러!';
+        this.isAlert = true;
+      }
+    },
+
+    onRejected (rejectedEntries) {
+      // Notify plugin needs to be installed
+      // https://quasar.dev/quasar-plugins/notify#Installation
+      this.$q.notify({
+        type: 'negative',
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
+      });
+    },
+
+    inputImg() {
+      this.imgSrc = URL.createObjectURL(this.img);
+    },
+
+    async modifyPassword() {
+      if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
+        this.msg = '비밀번호를 확인해주세요!';
+        this.isAlert = true;
+      } else {
+        const body = {
+          reg_type: 'business',
+          phonenum: this.phone,
+          password: this.password,
+        };
+        const apiResult = await API.changePassword(body);
+        if(apiResult.status === 200) {
+          console.log(apiResult);
+        } else {
+          console.log(apiResult.respone);
+          this.msg = '통신에러!';
+          this.isAlert = true;
+        }
+      }
     },
   },
 };

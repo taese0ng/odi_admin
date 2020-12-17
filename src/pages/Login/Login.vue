@@ -84,19 +84,28 @@ export default {
         const apiResult = await API.login(body);
 
         if(apiResult.status === 200) {
-          console.log(apiResult.data);
+          console.log(apiResult);
+          if(apiResult.data.result === 'success') {
+            const option = {
+              expires: '10h',
+              path: '/',
+            };
+            Cookies.set('access_token', apiResult.data.token, option);
+            const userInfo = await API.getUserInfo();
+            console.log(userInfo);
+            if(userInfo.statusText === 'OK') {
+              Cookies.set('userNickName', userInfo.data.business_nick_name, option);
+              this.$store.commit('setLoginName', { name: userInfo.data.business_nick_name, value: true });
+              this.$router.push({ 
+                name: 'statistics', 
+              });
+            }
+          }
         } else {
+          this.msg = '통신에 문제가 발생하였습니다.';
+          this.isAlert = true;
           console.log(apiResult.response);
         }
-        // const option = {
-        //   expires: '10h',
-        //   path: '/',
-        // };
-        // Cookies.set('access_token', 'token', option);
-        // this.$store.commit('setLoginName', { name: 'test' });
-        // this.$router.push({ 
-        //   name: 'statistics', 
-        // });
       }
       // const apiResult = await API.login();
       // console.log(apiResult);

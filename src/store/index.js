@@ -16,14 +16,14 @@ Vue.use(Vuex);
 // store.js
 export const store = new Vuex.Store({
   state: {
-    loginName: '',
+    loginName: Cookies.get('userNickName'),
     isLogin: !!Cookies.get('access_token'),
   },
   
   mutations: {
     setLoginName(state, payload) {
       state.loginName = payload.name;
-      state.isLogin = true;
+      state.isLogin = payload.value;
     },
   },
 

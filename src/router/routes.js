@@ -103,6 +103,7 @@ const routes = [
   // but you can also remove it
   {
     path: '*',
+    redirect: { name: 'statistics' },
     component: () => import('pages/Error404.vue'),
   },
 ];

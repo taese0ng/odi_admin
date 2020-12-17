@@ -133,14 +133,18 @@ export default {
     };
   },
 
-  computed: {
-    ...mapGetters(['getLoginInfo']),
-  },
-
   methods: {
     logout() {
-      Cookies.remove('access_token');
-      this.$router.push({ name: 'login' });
+      if(Cookies.get('access_token')) {
+        this.menuList.forEach(item => { item.open = false; });
+        const option = {
+          path: '/',
+        };
+        Cookies.remove('access_token', option);
+        Cookies.remove('userNickName', option);
+        this.setLoginName({ name: '', value: false });
+        this.$router.push({ path: '/login' });
+      }
     },
   },
 };

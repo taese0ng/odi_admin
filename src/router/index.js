@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 
 import routes from './routes';
 import { Cookies } from 'quasar';
+
 Vue.use(VueRouter);
 
 /*
@@ -14,7 +15,13 @@ Vue.use(VueRouter);
  * with the Router instance.
  */
 
-export default function (/* { store, ssrContext } */) {
+// 인증이 필요한 route name 을 가진 배열
+const routeNameAuth = ['myPage',
+  'cafeNormalInfo', 'statistics', 
+  'cafeStoryUpload', 'cafeStoryList', 
+  'cafeStoryDetail', 'reviewList'];
+
+export default function ({ store, ssrContext }) {
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes,
@@ -27,26 +34,20 @@ export default function (/* { store, ssrContext } */) {
   });
 
   // 전역 vue rotuer navigation guard
-  // Router.beforeEach((to, from, next) => {
-  //   // if(!Cookies.get('access_token')) {
-  //   //   return next('/login');
-  //   // }
-  //   console.log(to.name);
-  //   if(to.name === 'signUp' || to.name === 'findPassword') {
-  //     next();
-  //   } else if(to.name === 'login') {
-  //     if(Cookies.get('access_token')) {
-  //       console.log('enter');
-  //       return next({ path: 'normalList', query: { opt: 'name', search: '', page: 1, size: 10 } });
-  //     }
-  //   } else{
-  //     if(!Cookies.get('access_token')) {
-  //       console.log('enter');
-  //       return next('/login');
-  //     }
-  //   }
-  //   return next();
-  // });
+  Router.beforeEach((to, from, next) => {
+    if(routeNameAuth.includes(to.name)) {
+      console.log(to.name);
+      if(Cookies.get('access_token')) {
+        return next(true);
+      } else {
+        console.log('여기');
+        store.commit('setLoginName', { name: '', value: false });
+        return next({ name: 'login' });
+      }
+    }
+
+    return next(true);
+  });
 
   return Router;
 }
