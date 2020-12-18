@@ -22,6 +22,7 @@ export default {
 
     ...mapMutations({
       setIsLogin: 'setIsLogin',
+      setCafeSrl: 'setCafeSrl',
     }),
   },
 

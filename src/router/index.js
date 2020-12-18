@@ -36,7 +36,6 @@ export default function ({ store, ssrContext }) {
   // 전역 vue rotuer navigation guard
   Router.beforeEach(async (to, from, next) => {
     if(routeNameAuth.includes(to.name)) {
-      console.log(to.name);
       if(Cookies.get('access_token')) {
         if(!store.state.cafeSrl) {
           await store.dispatch('dispatchGetSrl');
@@ -44,7 +43,6 @@ export default function ({ store, ssrContext }) {
         }
         return next(true);
       } else {
-        console.log('여기');
         store.commit('setIsLogin', { value: false });
         return next({ name: 'login' });
       }

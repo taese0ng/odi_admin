@@ -46,6 +46,7 @@ import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Alert from 'components/Alert/Alert';
 import { Cookies } from'quasar';
 import API from 'src/repositories/Login/LoginAPI';
+import { access } from 'fs';
 
 export default {
   name: 'Login',
@@ -92,6 +93,7 @@ export default {
             };
             Cookies.set('access_token', apiResult.data.token, option);
             this.$store.commit('setIsLogin', { value: true });
+            console.log('login');
             this.$router.push({ 
               name: 'statistics', 
             });

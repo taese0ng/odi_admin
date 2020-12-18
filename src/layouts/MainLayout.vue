@@ -143,6 +143,7 @@ export default {
         };
         Cookies.remove('access_token', option);
         this.setIsLogin({ value: false });
+        this.setCafeSrl({ cafe_srl: null, cafe_name: 'odiAdmin' });
         this.$router.push({ path: '/login' });
       }
     },

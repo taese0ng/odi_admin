@@ -44,15 +44,16 @@ export const store = new Vuex.Store({
   },
 
   actions: {
-    async dispatchGetSrl({ commit, dispatch, getters, state }, payload) {
+    async dispatchGetSrl({ commit, dispatch, getters, state }) {
       const apiResult = await API.getCafeSrl();
       // console.log(apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        console.log(apiResult);
         commit('setCafeSrl', apiResult.data.result[0]);
       }
     },
 
-    async dispatchGetUserInfo({ commit, dispatch, getters, state }, payload) {
+    async dispatchGetUserInfo({ commit, dispatch, getters, state }) {
       const apiResult = await API.getUserInfo();
       // console.log('userInfo: ', apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
