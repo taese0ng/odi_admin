@@ -20,7 +20,7 @@ export const store = new Vuex.Store({
     businessName: null,
     isLogin: !!Cookies.get('access_token'),
     cafeSrl: null,
-    cafeName: null,
+    cafeName: 'odiAdmin',
   },
   
   mutations: {

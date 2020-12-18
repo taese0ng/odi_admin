@@ -34,14 +34,11 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="id"
-              color="blue-grey-9" ref="id">
+              color="blue-grey-9" ref="id" disable>
                 <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
+                  <div class="row all-pointer-events items-center">
                     아이디
                   </div>
-                </template>
-                <template v-if="id" v-slot:append>
-                  <q-icon name="close" @click.stop="id = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
             </div>
@@ -114,7 +111,7 @@
                 생년월일
               </div>
               <div class="col-9">
-                <q-input v-model="birth" filled type="date" dense color="brown-13"/>
+                <q-input v-model="birth" filled type="date" dense color="brown-13" disable/>
               </div>
             </div>
           </div>
@@ -164,6 +161,34 @@
                   <q-icon name="close" @click.stop="phone = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label="과세구분" filled dense v-model="taxClassification"
+              color="blue-grey-9" disable/>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label="사업자등록번호" filled dense v-model="regNum"
+              color="blue-grey-9" disable/>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label="업태" filled dense v-model="type"
+              color="blue-grey-9" disable/>
+            </div>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label="종목" filled dense v-model="typeDetail"
+              color="blue-grey-9" disable/>
             </div>
           </div>
 
@@ -224,6 +249,11 @@ export default {
       phone: '',
       birth: null,
 
+      taxClassification: '',
+      regNum: '',
+      type: '',
+      typeDetail: '',
+
       isDialog: false,
       isConfirm: false,
       isAlert: false,
@@ -250,7 +280,10 @@ export default {
         this.name = data.business_nick_name;
         this.phone = data.business_phone;
         this.birth = data.business_birth.slice(0, 4) + '-' + data.business_birth.slice(4, 6) + '-' + data.business_birth.slice(6);
-        console.log(this.birth);
+        this.taxClassification = data.business_tax_classification;
+        this.regNum = data.business_reg_num;
+        this.type = data.business_type;
+        this.typeDetail = data.business_type_detail;
       } else {
         console.log(apiResult.response);
         this.msg = '통신에러!';
@@ -265,10 +298,7 @@ export default {
     },
 
     async modifyUser() {
-      if(!this.id) {
-        this.msg = 'ID를 입력해주세요';
-        this.isAlert = true;
-      } else if(this.checkedPassword) {
+      if(this.checkedPassword) {
         if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
           this.msg = '비밀번호를 확인해주세요!';
           this.isAlert = true;
