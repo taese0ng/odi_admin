@@ -18,7 +18,7 @@ export default ({
   },
 
   removeAccount() {
-    return axios.post('/auth/login/delete_account', headers);
+    return axios.post('/auth/login/delete_account', {}, headers);
   },
 
   modifyUser(body) {

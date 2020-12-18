@@ -9,6 +9,7 @@ export default {
       getLoginInfo: 'getLoginInfo',
       getCafeName: 'getCafeName',
       getBusinessName: 'getBusinessName',
+      getCafeSrl: 'getCafeSrl',
     }),
   },
 

@@ -273,7 +273,7 @@ export default {
       const apiResult = await API.getUserInfo();
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        // console.log(apiResult);
         const data = apiResult.data;
         this.id = data.business_id;
         this.email = data.business_email;

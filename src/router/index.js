@@ -34,10 +34,14 @@ export default function ({ store, ssrContext }) {
   });
 
   // 전역 vue rotuer navigation guard
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach(async (to, from, next) => {
     if(routeNameAuth.includes(to.name)) {
       console.log(to.name);
       if(Cookies.get('access_token')) {
+        if(!store.state.cafeSrl) {
+          await store.dispatch('dispatchGetSrl');
+          await store.dispatch('dispatchGetUserInfo');
+        }
         return next(true);
       } else {
         console.log('여기');

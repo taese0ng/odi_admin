@@ -85,8 +85,10 @@
 </template>
 
 <script>
+import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import PieChart from 'components/Charts/Pie';
+import API from 'src/repositories/CafeInfo/StatisticsAPI';
 
 export default {
   name: 'CafeStatistics',
@@ -94,6 +96,8 @@ export default {
     Header,
     PieChart,
   },
+
+  mixins: [rootStoreHelper],
 
   data() {
     return {
@@ -160,6 +164,27 @@ export default {
         },
       },
     };
+  },
+
+  created() {
+    this.getStatistics();
+  },
+
+  methods: {
+    async getStatistics() {
+      const body = {
+        cafe_srl: this.getCafeSrl,
+      };
+      const apiResult = await API.getStatistics(body);
+
+      console.log(apiResult);
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        const data = apiResult.data[0];
+        this.exposure = data.cafe_watch_views;
+        this.view = data.cafe_views;
+        this.like = data.cafe_like;
+      }
+    },
   },
 };
 </script>

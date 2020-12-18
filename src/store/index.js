@@ -4,16 +4,6 @@ import { Cookies } from 'quasar';
 import API from 'src/repositories/Store/StoreAPI';
 
 Vue.use(Vuex);
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
-
 // store.js
 export const store = new Vuex.Store({
   state: {
@@ -31,7 +21,7 @@ export const store = new Vuex.Store({
       state.businessName = payload.business_nick_name;
     },
     setCafeSrl(state, payload) {
-      state.cafeStr = payload.cafe_srl;
+      state.cafeSrl = payload.cafe_srl;
       state.cafeName = payload.cafe_name;
     },
   },
@@ -47,6 +37,9 @@ export const store = new Vuex.Store({
 
     getCafeName(state) {
       return state.cafeName;
+    },
+    getCafeSrl(state) {
+      return state.cafeSrl;
     },
   },
 
