@@ -2,7 +2,7 @@ import axios from 'src/utils/axiosUtils';
 // import { Cookies } from 'quasar';
 
 // const accessToken = Cookies.get('access_token');
-// const headers = { headers: { Authorization: `Bearer ${accessToken}` } };
+// const headers = { headers: { Authorization: accessToken } };
 
 export default ({
   signup(body) {

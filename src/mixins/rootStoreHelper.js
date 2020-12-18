@@ -7,16 +7,20 @@ export default {
 
     ...mapGetters({
       getLoginInfo: 'getLoginInfo',
+      getCafeName: 'getCafeName',
+      getBusinessName: 'getBusinessName',
     }),
   },
 
   methods: {
     ...mapActions({
       dispatchIsLoginAction: 'isLoginAction',
+      dispatchGetSrl: 'dispatchGetSrl',
+      dispatchGetUserInfo: 'dispatchGetUserInfo',
     }),
 
     ...mapMutations({
-      setLoginName: 'setLoginName',
+      setIsLogin: 'setIsLogin',
     }),
   },
 

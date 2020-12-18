@@ -41,7 +41,7 @@ export default function ({ store, ssrContext }) {
         return next(true);
       } else {
         console.log('여기');
-        store.commit('setLoginName', { name: '', value: false });
+        store.commit('setIsLogin', { value: false });
         return next({ name: 'login' });
       }
     }

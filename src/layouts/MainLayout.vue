@@ -2,11 +2,11 @@
   <q-layout view="hHh Lpr lff" class="container">
     <q-header elevated class="bg-brown-13 container">
       <q-toolbar>
-        <q-btn v-if="getLoginInfo.isLogin" flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>{{ siteTitle }}</q-toolbar-title>
-        <template v-if="getLoginInfo.isLogin">
+        <q-btn v-if="getLoginInfo" flat @click="drawer = !drawer" round dense icon="menu" />
+        <q-toolbar-title>{{ getCafeName }}</q-toolbar-title>
+        <template v-if="getLoginInfo">
           <q-item-label class="items-center"
-          style="margin-right: 12px; text-decoration: none; color: white">{{ getLoginInfo.name }}</q-item-label>
+          style="margin-right: 12px; text-decoration: none; color: white">{{ getBusinessName }}</q-item-label>
           <q-btn flat color="white" no-caps label="Logout" @click='logout'/>
         </template>
       </q-toolbar>
@@ -136,13 +136,13 @@ export default {
   methods: {
     logout() {
       if(Cookies.get('access_token')) {
+        this.drawer = false;
         this.menuList.forEach(item => { item.open = false; });
         const option = {
           path: '/',
         };
         Cookies.remove('access_token', option);
-        Cookies.remove('userNickName', option);
-        this.setLoginName({ name: '', value: false });
+        this.setIsLogin({ value: false });
         this.$router.push({ path: '/login' });
       }
     },

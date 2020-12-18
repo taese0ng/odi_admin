@@ -91,15 +91,10 @@ export default {
               path: '/',
             };
             Cookies.set('access_token', apiResult.data.token, option);
-            const userInfo = await API.getUserInfo();
-            console.log(userInfo);
-            if(userInfo.statusText === 'OK') {
-              Cookies.set('userNickName', userInfo.data.business_nick_name, option);
-              this.$store.commit('setLoginName', { name: userInfo.data.business_nick_name, value: true });
-              this.$router.push({ 
-                name: 'statistics', 
-              });
-            }
+            this.$store.commit('setIsLogin', { value: true });
+            this.$router.push({ 
+              name: 'statistics', 
+            });
           }
         } else {
           this.msg = '통신에 문제가 발생하였습니다.';

@@ -243,16 +243,14 @@ export default {
       const apiResult = await API.getUserInfo();
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        if(apiResult.data.result === 'success') {
-          console.log(apiResult);
-          const data = apiResult.data;
-          this.id = data.business_id;
-          this.email = data.business_email;
-          this.name = data.business_nick_name;
-          this.phone = data.business_phone;
-          this.birth = data.business_birth.slice(0, 4) + '-' + data.business_birth.slice(4, 6) + '-' + data.business_birth.slice(6);
-          console.log(this.birth);
-        }
+        console.log(apiResult);
+        const data = apiResult.data;
+        this.id = data.business_id;
+        this.email = data.business_email;
+        this.name = data.business_nick_name;
+        this.phone = data.business_phone;
+        this.birth = data.business_birth.slice(0, 4) + '-' + data.business_birth.slice(4, 6) + '-' + data.business_birth.slice(6);
+        console.log(this.birth);
       } else {
         console.log(apiResult.response);
         this.msg = '통신에러!';
