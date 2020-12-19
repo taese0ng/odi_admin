@@ -85,7 +85,7 @@ export default {
         const apiResult = await API.login(body);
 
         if(apiResult.status === 200) {
-          console.log(apiResult);
+          // console.log(apiResult);
           if(apiResult.data.result === 'success') {
             const option = {
               expires: '10h',
@@ -104,19 +104,6 @@ export default {
           console.log(apiResult.response);
         }
       }
-      // const apiResult = await API.login();
-      // console.log(apiResult);
-      //
-      // if(apiResult.status === 200) {
-      //   console.log(apiResult.data);
-      //   localStorage.setItem('token', 'tokenValue');
-      //   this.dispatchIsLoginAction({ isLogin: true });
-      //   this.$router.push({
-      //     path: '/clientManagement/list?opt=name&search=&page=1&size=10',
-      //   });
-      // } else {
-      //   console.log(apiResult.status);
-      // }
     },
   },
 };

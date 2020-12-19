@@ -113,8 +113,7 @@ module.exports = function (/* ctx */) {
     pwa: {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {
-        skipWaiting: true,
-        clientsClaim: true,
+        exclude: [/\.html$/],
       },
       manifest: {
         name: 'odiAdmin',

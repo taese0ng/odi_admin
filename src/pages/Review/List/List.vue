@@ -1,17 +1,15 @@
 <template>
   <q-page padding>
-    <Header :title="title" />
+    <Header :title="title" class="q-mb-lg"/>
 
-    <SearchBar :searchOptions="searchOptions" :searchValue="searchValue"
+    <!-- <SearchBar :searchOptions="searchOptions" :searchValue="searchValue"
                :selectedOption="selectedOption"
                @optionChange="(targetOptionValue) => optionChange(targetOptionValue)"
                @searchInput="(targetInputValue) => this.searchValue=targetInputValue"
-               @onClickSearch="onClickSearch"/>
+               @onClickSearch="onClickSearch"/> -->
 
-    <Table title="" modifyBtn withdrawalBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
-           @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"
-            @onClickModify="onClickModify"
-           @onClickWithdrawal="onClickWithdrawal"/>
+    <Table title="" :rows="rows" :columns="columns" :selectedItems="selectedItems"
+           @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"/>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
     <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
@@ -19,22 +17,24 @@
 </template>
 
 <script>
+import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
-import SearchBar from 'components/SearchBar/SearchBar';
 import Table from 'components/Table/Table';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
+import API from 'src/repositories/Review/ListAPI';
 
 export default {
   name: 'ReviewList',
 
   components: {
     Table,
-    SearchBar,
     Header,
     Confirm,
     Alert,
   },
+
+  mixins: [rootStoreHelper],
 
   data () {
     return {
@@ -58,7 +58,7 @@ export default {
       sortOption: '가입일',
 
       selectedItems: [],
-      columnLabels: ['번호', '아이디', '이름', '성별', '생년월일', '이메일', '전화번호', '처리'],
+      columnLabels: ['번호', '아이디', '작성자 닉네임', '리뷰 점수', '리뷰 내용', '등록 일시'],
       columns: [],
       rows: [],
     };
@@ -93,45 +93,26 @@ export default {
     async initNormalList() {
       // const route = this.$route.query;
       const rows = [];
-      for(let i = 0; i < 10; i++) {
-        const data = {
-          id: i + 1,
-          no: i + 1,
-          nick: 'testID',
-          name: `${i + 1}번째사람`,
-          gender: '남',
-          birth: '2020/12/13',
-          email: 'test@naver.com',
-          phone: '010-1234-5678',
-        };
-        rows.push(data);
-      }
 
-      // const route = this.$route.query;
-      // const queryString = `${route.opt}=${route.search}&page=${route.page}&size=${route.size}`;
-      // const apiResult = await API.getUsers(queryString);
-      //
-      // if(apiResult.status === 200) {
-      //   const data = apiResult.data;
-      //   console.log(data);
-      //   data.forEach((item, idx) => {
-      //     const row = {
-      //       id: idx + 1,
-      //       no: idx + 1,
-      //       email: 'tskim@hnmcorp.kr',
-      //       logins: ['kakao', 'google', 'naver'],
-      //       name: `${idx + 1}번째사람`,
-      //       phone: '010-1234-5678',
-      //       pets: '1/1/2',
-      //       state: '사용중',
-      //       signUpDate: '2020.10.29',
-      //       recentLogin: '2020.10.29 12:34:56',
-      //     };
-      //     rows.push(row);
-      //   });
-      // } else {
-      //   console.log(apiResult.response);
-      // }
+      const body = {
+        cafe_srl: this.getCafeSrl,
+      };
+      const apiResult = await API.getReviewList(body);
+      console.log(apiResult);
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        const data = apiResult.data;
+        data.forEach((item, idx) => {
+          const row = {
+            id: item.review_srl,
+            no: idx,
+            nick: item.user_nick_name,
+            score: item.review_score,
+            content: item.review_content,
+            date: item.review_reg_date,
+          };
+          rows.push(row);
+        });
+      }
 
       this.rows = rows;
     },
@@ -161,30 +142,8 @@ export default {
       this.sortOption = targetSort;
     },
 
-    onClickModify (targetRow) {
-      if (targetRow !== null) {
-        if (targetRow.id) {
-          this.$router.push({
-            name: 'cafeStoryDetail',
-            params: { id: targetRow.id },
-          });
-        }
-      }
-    },
-
-    onClickWithdrawal(targetRow) {
-      console.log(targetRow);
-      this.msg = '탈퇴시키겠습니까?';
-      this.confirmMethod = this.withdrawalUser;
-      this.isConfirm = true;
-    },
-
     closeConfirm() {
       this.isConfirm = false;
-    },
-
-    withdrawalUser() {
-      console.log('user withdrawalUser');
     },
   },
 };

@@ -39,7 +39,7 @@
               
               <div class='q-pt-xs'>
                 <template v-for='item in hashTags'>
-                  <q-chip :key='item' removable @remove="removeChip(item)" color="primary" text-color="white">{{item}}</q-chip>
+                  <q-chip :key='item' removable @remove="removeChip(item)" color="brown-5" text-color="white">{{item}}</q-chip>
                 </template>
               </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="q-pl-sm">카테고리</div>
             <div class="text-black">
               <template v-for='item in categories'>
-                <q-checkbox :key='item.label' keep-color color="blue-grey-9" 
+                <q-checkbox :key='item.label' keep-color color="brown-5" 
                 v-model="item.value" :label="item.label" class="q-mr-lg"/>
               </template>
             </div>
@@ -75,7 +75,7 @@
 
           <div class="col-12 q-mb-md">
             <div class="text-grey">
-              <q-input label-slot filled dense v-model="coupon"
+              <q-input type='Number' label-slot filled dense v-model="coupon"
               color="blue-grey-9" ref="coupon">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center">
@@ -142,22 +142,6 @@
 
           <div class="col-12 q-mb-md">
             <div class="text-grey">
-              <q-input label-slot filled dense v-model="phone"
-                       color="blue-grey-9" ref="phone">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    휴대전화
-                  </div>
-                </template>
-                <template v-if="phone" v-slot:append>
-                  <q-icon name="close" @click.stop="phone = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
-            </div>
-          </div>
-
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
               <q-input label-slot filled dense v-model="weekdayTime"
                        color="blue-grey-9" ref="weekdayTime">
                 <template v-slot:label>
@@ -206,11 +190,20 @@
 
           <div class="col-12 q-mb-md bg-grey-2 q-pa-xs">
             <div class="q-pl-sm necessary">편의정보</div>
-            <div class="text-black">
+            <div class="text-black row justify-between">
               <template v-for='item in convenience'>
-                <q-checkbox :key='item.label' keep-color color="blue-grey-9" 
-                v-model="item.value" :label="item.label" class="q-mr-lg"/>
+                <q-checkbox :key='item.label' keep-color color="brown-5" 
+                v-model="item.value" :label="item.label" class="col-4"/>
               </template>
+              <div class="q-pl-sm q-gutter-sm items-center q-pb-sm">
+                <div>
+                  화장실
+                </div>
+                <q-radio dense v-model="toilet" val='0' label="없음" color="brown-5"/>
+                <q-radio dense v-model="toilet" val='1' label="카페공용" color="brown-5"/>
+                <q-radio dense v-model="toilet" val='2' label="건물공용" color="brown-5"/>
+                <q-radio dense v-model="toilet" val='3' label="남녀구분" color="brown-5"/>
+              </div>
             </div>
           </div>
 
@@ -231,11 +224,14 @@
 
           <div class="col-12 q-mb-md q-pa-sm bg-grey-2">
             <template v-for="(item) in menu">
-              <div class='row q-mb-sm' :key="item.id">
-                <div class='col-6 col-sm-7 q-pr-sm'>
+              <div class='row q-mb-sm q-col-gutter-sm' :key="item.id">
+                <div class='col-4 col-sm-5'>
                   <q-input outlined label="메뉴 이름" dense v-model="item.name"/>
                 </div>
-                <div class='col-3 q-pr-sm'>
+                <div class='col-3'>
+                  <q-input outlined label='타입' dense v-model="item.type"/>
+                </div>
+                <div class='col-2'>
                   <q-input outlined label="가격" type='number' dense v-model="item.price"/>
                 </div>
                 <div class='col-3 col-sm-2 self-center'>
@@ -264,12 +260,14 @@
 </template>
 
 <script>
+import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
 import DaumPostcode from 'components/Dialog/DaumPostcodeDialog';
+import API from 'src/repositories/CafeInfo/NormalAPI';
 
 export default {
   name: 'CafeNormalInfo',
@@ -282,16 +280,17 @@ export default {
     DaumPostcode,
   },
 
+  mixins: [rootStoreHelper],
+
   data () {
     return {
       title: '카페 기본 정보 입력 / 수정',
 
       address: '',
       hashTag: '',
-      hashTags: ['test', 'test2', 'test3'],
+      hashTags: [],
       tell: '',
       name: '',
-      phone: '',
       coupon: '',
       businessEvent: '',
       instagram: '',
@@ -311,23 +310,81 @@ export default {
       confirmMethod: null,
     
       categories: [
-        { label: '카테고리1', value: false },
-        { label: '카테고리2', value: false },
-        { label: '카테고리3', value: false },
-        { label: '카테고리4', value: false },
+        { label: '디저트', value: false },
+        { label: '베이커리', value: false },
+        { label: '브런치', value: false },
+        { label: '애견동반', value: false },
+        { label: '주택개조,한옥', value: false },
+        { label: '루프탑', value: false },
+        { label: '뷰', value: false },
+        { label: '포토존', value: false },
       ],
 
       convenience: [
         { label: 'WiFi', value: false },
+        { label: '주차가능', value: false },
+        { label: '노키즈존', value: false },
+        { label: '예약가능', value: false },
+        { label: '단체가능', value: false },
+        { label: '애견동반', value: false },
+        { label: '편안한좌석', value: false },
+        { label: '원두구매가능', value: false },
+        { label: '직접원두로스팅', value: false },
+        { label: '포장가능', value: false },
+        { label: '핸드드립', value: false },
+        { label: '굿즈판매', value: false },
+        { label: '대관가능', value: false },
       ],
 
-      menu: [
-        { id: 0, name: '', price: 0 },
-      ],
+      toilet: '0',
+
+      menu: [],
     };
   },
 
+  created() {
+    this.initCafeInfo();
+  },
+
   methods: {
+    async initCafeInfo() {
+      const body = {
+        cafe_srl: this.getCafeSrl,
+      };
+      const apiResult = await API.getCafeInfo(body);
+      console.log(apiResult);
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        const data = apiResult.data[0];
+        this.name = data.cafe_name;
+        data.cafe_tag.forEach(item => {
+          this.hashTags.push(item.tag_content);
+        });
+        this.address = data.cafe_address;
+        this.closedDay = data.cafe_closed_date;
+        this.coupon = data.cafe_coupon;
+        this.instagram = data.cafe_sns_account;
+        this.tell = data.cafe_phone;
+        this.review = data.cafe_oneline_intro;
+        this.weekdayTime = data.cafe_week_workday;
+        this.weekendTime = data.cafe_weekend_workday;
+        this.cafeInfo = data.cafe_intro;
+        for(let i = 0; i < data.cafe_info.length; i++) {
+          if(data.cafe_info[i] === '1') {
+            this.convenience[i].value = true;
+          }
+          if(i === data.cafe_info.length - 1) {
+            this.toilet = data.cafe_info[i];
+          }
+        }
+        data.cafe_category.split(' ').forEach(item => {
+          this.categories[this.categories.findIndex(x => x.label === item)].value = true;
+        });
+        data.menu.forEach((item, idx) => {
+          this.menu.push({ id: idx, name: item.menu_name, price: item.menu_price, type: item.menu_type });
+        });
+      }
+    },
+
     onClickSave () {
       this.msg = '저장하시겠습니까?';
       this.confirmMethod = this.createAdmin;
@@ -346,9 +403,6 @@ export default {
         this.isAlert = true;
       } else if(!this.name) {
         this.msg = '이름을 입력해주세요!';
-        this.isAlert = true;
-      } else if(!this.phone) {
-        this.msg = '휴대전화를 입력해주세요!';
         this.isAlert = true;
       } else if(!this.address1 || !this.zipCode) {
         this.msg = '주소를 입력해주세요!';
@@ -380,7 +434,7 @@ export default {
       if(this.menu.length !== 0) {
         id = this.menu[this.menu.length - 1].id + 1;
       }
-      const item = { id: id, name: '', price: 0 };
+      const item = { id: id, name: '', price: 0, type: '' };
       this.menu.push(item);
     },
 

@@ -48,7 +48,6 @@ export const store = new Vuex.Store({
       const apiResult = await API.getCafeSrl();
       // console.log(apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
         commit('setCafeSrl', apiResult.data.result[0]);
       }
     },

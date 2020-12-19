@@ -310,7 +310,7 @@ export default {
       };
       const apiResult = await API.getStatistics(body);
 
-      console.log(apiResult);
+      // console.log(apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
         const data = apiResult.data[0];
         this.exposure = data.cafe_watch_views;
