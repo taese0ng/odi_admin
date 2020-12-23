@@ -1,17 +1,11 @@
 <template>
   <q-page padding>
-    <Header :title="title" :subBtn='subBtn'/>
+    <Header :title="title" :subBtn='subBtn' class="q-mb-lg"/>
 
-    <SearchBar :searchOptions="searchOptions" :searchValue="searchValue"
-               :selectedOption="selectedOption"
-               @optionChange="(targetOptionValue) => optionChange(targetOptionValue)"
-               @searchInput="(targetInputValue) => this.searchValue=targetInputValue"
-               @onClickSearch="onClickSearch"/>
-
-    <Table title="" modifyBtn withdrawalBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
+    <Table title="" modifyBtn deleteBtn :rows="rows" :columns="columns" :selectedItems="selectedItems"
            @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"
             @onClickModify="onClickModify"
-           @onClickWithdrawal="onClickWithdrawal"/>
+           @onClickDelete="onClickDelete"/>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
     <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
@@ -19,22 +13,24 @@
 </template>
 
 <script>
+import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
-import SearchBar from 'components/SearchBar/SearchBar';
 import Table from 'components/Table/Table';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
+import API from 'src/repositories/CafeStory/ListAPI';
 
 export default {
   name: 'CafeStoryList',
 
   components: {
     Table,
-    SearchBar,
     Header,
     Confirm,
     Alert,
   },
+  
+  mixins: [rootStoreHelper],
 
   data () {
     return {
@@ -64,28 +60,16 @@ export default {
       sortOption: '가입일',
 
       selectedItems: [],
-      columnLabels: ['번호', '아이디', '이름', '성별', '생년월일', '이메일', '전화번호', '처리'],
+      columnLabels: ['번호', '내용', '등록 일시', '처리'],
       columns: [],
       rows: [],
+      storyObj: [],
     };
   },
 
   created() {
     this.initColumns();
     this.initNormalList();
-  },
-
-  beforeMount () {
-    const route = this.$route.query;
-    this.selectedOption = this.searchOptions.find(opt => opt.value === route.opt);
-    this.currentPage = parseInt(route.page);
-    this.searchValue = this.$route.query.search;
-  },
-
-  watch: {
-    '$route' () {
-      this.initNormalList();
-    },
   },
 
   methods: {
@@ -97,48 +81,29 @@ export default {
     },
 
     async initNormalList() {
-      // const route = this.$route.query;
       const rows = [];
-      for(let i = 0; i < 10; i++) {
-        const data = {
-          id: i + 1,
-          no: i + 1,
-          nick: 'testID',
-          name: `${i + 1}번째사람`,
-          gender: '남',
-          birth: '2020/12/13',
-          email: 'test@naver.com',
-          phone: '010-1234-5678',
-        };
-        rows.push(data);
+
+      const body = {
+        cafe_srl: this.getCafeSrl,
+      };
+      const apiResult = await API.getStoryList(body);
+
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        console.log(apiResult);
+        const data = apiResult.data;
+        this.storyObj = data;
+        data.forEach((item, idx) => {
+          const row = {
+            id: item.story_srl,
+            no: idx + 1,
+            content: item.story_content,
+            date: item.story_reg_date,
+          };
+          rows.push(row);
+        });
+      } else {
+        console.log(apiResult.response);
       }
-
-      // const route = this.$route.query;
-      // const queryString = `${route.opt}=${route.search}&page=${route.page}&size=${route.size}`;
-      // const apiResult = await API.getUsers(queryString);
-      //
-      // if(apiResult.status === 200) {
-      //   const data = apiResult.data;
-      //   console.log(data);
-      //   data.forEach((item, idx) => {
-      //     const row = {
-      //       id: idx + 1,
-      //       no: idx + 1,
-      //       email: 'tskim@hnmcorp.kr',
-      //       logins: ['kakao', 'google', 'naver'],
-      //       name: `${idx + 1}번째사람`,
-      //       phone: '010-1234-5678',
-      //       pets: '1/1/2',
-      //       state: '사용중',
-      //       signUpDate: '2020.10.29',
-      //       recentLogin: '2020.10.29 12:34:56',
-      //     };
-      //     rows.push(row);
-      //   });
-      // } else {
-      //   console.log(apiResult.response);
-      // }
-
       this.rows = rows;
     },
 
@@ -151,46 +116,42 @@ export default {
       // const route = this.$route.query;
     },
 
-    movePage (current) {
-      if(this.$route.query.page !== current.toString()) {
-        this.currentPage = current;
-        // const route = this.$route.query;
-      }
-    },
-
-    setRowsPerPage (targetSize) {
-      this.paginationOptions.rowsPerPage = targetSize;
-      // const route = this.$route.query;
-    },
-
-    setSortOption(targetSort) {
-      this.sortOption = targetSort;
-    },
-
     onClickModify (targetRow) {
       if (targetRow !== null) {
         if (targetRow.id) {
+          const target = this.storyObj.find(x => x.story_srl === targetRow.id);
+          console.log(target);
           this.$router.push({
             name: 'cafeStoryDetail',
-            params: { id: targetRow.id },
+            params: { storySrl: target.story_srl, content: target.story_content, imageCount: target.story_image_count },
           });
         }
       }
     },
 
-    onClickWithdrawal(targetRow) {
+    onClickDelete(targetRow) {
       console.log(targetRow);
-      this.msg = '탈퇴시키겠습니까?';
-      this.confirmMethod = this.withdrawalUser;
+      this.msg = '삭제시키겠습니까?';
+      this.confirmMethod = () => this.deleteStory(targetRow);
       this.isConfirm = true;
+    },
+
+    async deleteStory(targetRow) {
+      const body = {
+        cafe_srl: this.getCafeSrl,
+        story_srl: targetRow.id,
+      };
+      const apiResult = await API.deleteStory(body);
+      if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+        console.log(apiResult);
+        this.initNormalList();
+      } else {
+        console.log(apiResult.reponse);
+      }
     },
 
     closeConfirm() {
       this.isConfirm = false;
-    },
-
-    withdrawalUser() {
-      console.log('user withdrawalUser');
     },
   },
 };

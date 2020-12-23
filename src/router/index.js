@@ -39,15 +39,23 @@ export default function ({ store, ssrContext }) {
       if(Cookies.get('access_token')) {
         if(!store.state.cafeSrl) {
           await store.dispatch('dispatchGetSrl');
-          await store.dispatch('dispatchGetUserInfo');
+          if(store.state.cafeSrl === 'firstPeople') {
+            store.commit('setIsLogin', { value: false });
+            return next({ name: 'cafeNormalInfo' });
+          } else {
+            await store.dispatch('dispatchGetUserInfo');
+            store.commit('setIsLogin', { value: true });
+          }
         }
         return next(true);
       } else {
         store.commit('setIsLogin', { value: false });
+        store.commit('setCafeSrl', { cafe_srl: null, cafe_name: 'odiAdmin' });
         return next({ name: 'login' });
       }
     }
-
+    store.commit('setIsLogin', { value: false });
+    store.commit('setCafeSrl', { cafe_srl: null, cafe_name: 'odiAdmin' });
     return next(true);
   });
 

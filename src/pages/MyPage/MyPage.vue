@@ -135,14 +135,11 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="name"
-                       color="blue-grey-9" ref="name">
+                       color="blue-grey-9" ref="name" disable>
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
                     이름
                   </div>
-                </template>
-                <template v-if="name" v-slot:append>
-                  <q-icon name="close" @click.stop="name = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
             </div>
@@ -201,7 +198,7 @@
 
       <q-card-actions>
           <q-btn color="red-6" class="full-width q-mb-sm" @click="onClickWithdrawal" label="회원탈퇴"/>            
-          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickModify" label="정보수정"/>
+          <q-btn color="brown-13" class="full-width q-mb-sm" @click="onClickModify" label="정보저장"/>
           <q-btn color="blue-grey-8" class="full-width" @click="onClickCancel" label="취소"/>
       </q-card-actions>
 
@@ -214,6 +211,7 @@
 </template>
 
 <script>
+import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
@@ -231,6 +229,8 @@ export default {
     Alert,
     Dialog,
   },
+
+  mixins: [rootStoreHelper],
 
   data () {
     return {
@@ -273,7 +273,7 @@ export default {
       const apiResult = await API.getUserInfo();
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        // console.log(apiResult);
+        console.log(apiResult);
         const data = apiResult.data;
         this.id = data.business_id;
         this.email = data.business_email;
@@ -292,17 +292,15 @@ export default {
     },
 
     onClickModify () {
-      this.msg = '수정하시겠습니까?';
+      this.msg = '저장하시겠습니까?';
       this.confirmMethod = this.modifyUser;
       this.isConfirm = true;
     },
 
     async modifyUser() {
       if(this.checkedPassword) {
-        if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
-          this.msg = '비밀번호를 확인해주세요!';
-          this.isAlert = true;
-        }
+        this.msg = '비밀번호변경을 해주세요!';
+        this.isAlert = true;
       }else if(!this.email) {
         this.msg = '이메일을 입력해주세요!';
         this.isAlert = true;
@@ -340,7 +338,6 @@ export default {
       const apiResult = await API.removeAccount();
       if(apiResult.status === 200 && apiResult.data.result === 'success') {
         Cookies.remove('access_token');
-        Cookies.remove('userNickName');
       } else {
         console.log(apiResult.response);
         this.msg = '통신에러!';
@@ -391,6 +388,7 @@ export default {
         const body = {
           reg_type: 'business',
           phonenum: this.phone,
+          id: this.id,
           password: this.password,
         };
         const apiResult = await API.changePassword(body);

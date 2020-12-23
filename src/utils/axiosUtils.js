@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const BASE_API_URL = 'https://cafeodi.co.kr';
-
 const axiosInstance = axios.create({
   baseURL: BASE_API_URL,
   timeout: 2500,

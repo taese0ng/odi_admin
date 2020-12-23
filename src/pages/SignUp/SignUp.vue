@@ -77,11 +77,10 @@
                   <q-file
                       dense
                       color="blue-grey-9"
-                      v-model="img"
                       filled
                       label-slot
                       accept=".jpg, image/*"
-                      @input="inputImg"
+                      @input="(img)=>{inputImg(img)}"
                       @rejected="onRejected"
                   >
                     <template v-slot:label>
@@ -323,25 +322,39 @@ export default {
         this.msg = '생년월일을 확인해주세요!';
         this.isAlert = true;
       } else {
-        const body = {
-          reg_type: 'business',
-          id: this.id,
-          password: this.password,
-          email: this.email,
-          nick_name: this.name,
-          phonenum: this.phone,
-          birth: this.birth.replace(/-/gi, ''),
-          business_type: this.businessType,
-          business_type_detail: this.businessEvent,
-          business_reg_num: this.businessNum,
-          tax_classification: this.selectedTax,
-          is_ad: this.agreeAD,
-          ref_file: this.img,
-        };
-        const apiResult = await API.signup();
+        const body = new FormData();
+        body.append('reg_type', 'business');
+        body.append('id', this.id);
+        body.append('password', this.password);
+        body.append('nick_name', this.name);
+        body.append('phonenum', this.phone);
+        body.append('birth', this.birth.replace(/-/gi, ''));
+        body.append('business_type', this.businessType);
+        body.append('business_type_detail', this.businessEvent);
+        body.append('business_reg_num', this.businessNum);
+        body.append('tax_classification', this.selectedTax);
+        body.append('reg_file', this.img);
+        body.append('is_ad', this.agreeAD ? 'Y' : 'N');
+        
+        // const body = {
+        //   reg_type: 'business',
+        //   id: this.id,
+        //   password: this.password,
+        //   email: this.email,
+        //   nick_name: this.name,
+        //   phonenum: this.phone,
+        //   birth: this.birth.replace(/-/gi, ''),
+        //   business_type: this.businessType,
+        //   business_type_detail: this.businessEvent,
+        //   business_reg_num: this.businessNum,
+        //   tax_classification: this.selectedTax,
+        //   is_ad: this.agreeAD,
+        //   reg_file: this.img,
+        // };
+        const apiResult = await API.signup(body);
         // console.log(apiResult);
         if(apiResult.status === 200) {
-          // console.log(apiResult);
+          console.log(apiResult);
           if(apiResult.statusText === 'OK') {
             this.$router.push({ name: 'login' });
           } else {
@@ -377,8 +390,10 @@ export default {
       });
     },
 
-    inputImg() {
-      this.imgSrc = URL.createObjectURL(this.img);
+    inputImg(img) {
+      console.log(img);
+      this.img = img;
+      this.imgSrc = URL.createObjectURL(img);
     },
   },
 };

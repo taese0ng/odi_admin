@@ -8,7 +8,7 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="name"
-              color="blue-grey-9" ref="name">
+              color="blue-grey-9" ref="name" :disable='!firstRegister'>
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
                     카페명
@@ -39,7 +39,7 @@
               
               <div class='q-pt-xs'>
                 <template v-for='item in hashTags'>
-                  <q-chip :key='item' removable @remove="removeChip(item)" color="brown-5" text-color="white">{{item}}</q-chip>
+                  <q-chip :key='item.content' removable @remove="removeChip(item)" color="brown-5" text-color="white">{{item.content}}</q-chip>
                 </template>
               </div>
             </div>
@@ -58,7 +58,7 @@
           <div class="col-12 q-mb-md">
             <div class="row q-col-gutter-sm">
               <div class="col-3">
-                <q-btn color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
+                <q-btn :disable='!firstRegister' color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
               </div>
               <div class="col-9 text-grey">
                 <q-input label-slot filled dense v-model="address"
@@ -74,18 +74,26 @@
           </div>
 
           <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input type='Number' label-slot filled dense v-model="coupon"
-              color="blue-grey-9" ref="coupon">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center">
-                    쿠폰
-                  </div>
-                </template>
-                <template v-if="coupon" v-slot:append>
-                  <q-icon name="close" @click.stop="coupon = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
+            <div class="row q-col-gutter-sm items-center">
+              <div class="col-5">
+                <div class="text-grey">
+                  <q-input label-slot filled dense v-model="coupon"
+                  color="blue-grey-9" ref="coupon">
+                    <template v-slot:label>
+                      <div class="row all-pointer-events items-center">
+                        쿠폰 (10% or 20% ...)
+                      </div>
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+
+              <div class="col-7">
+                <div class="text-grey">
+                  <q-input label="쿠폰 비밀번호" filled dense v-model="couponPassword"
+                  color="blue-grey-9"/>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -141,34 +149,44 @@
           </div>
 
           <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="weekdayTime"
-                       color="blue-grey-9" ref="weekdayTime">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    평일 영업시간
+            <div class="row items-center q-col-gutter-sm">
+              <div class="col-3 q-pl-md necessary">
+                평일 영업시간
+              </div>
+              <div class="col-9">
+                <div class="row q-col-gutter-sm items-center">
+                  <div class="col-5">
+                    <q-input v-model="weekOpenTime" color="brown-5" dense filled type="time"/>
                   </div>
-                </template>
-                <template v-if="weekdayTime" v-slot:append>
-                  <q-icon name="close" @click.stop="weekdayTime = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
+                  <div class="col-2 text-center">
+                    ~
+                  </div>
+                  <div class="col-5">
+                    <q-input v-model="weekCloseTime" color="brown-5" dense filled type="time"/>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="weekendTime"
-                       color="blue-grey-9" ref="weekendTime">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    주말 영업시간
+            <div class="row items-center q-col-gutter-sm">
+              <div class="col-3 q-pl-md necessary">
+                주말 영업시간
+              </div>
+              <div class="col-9">
+                <div class="row q-col-gutter-sm items-center">
+                  <div class="col-5">
+                    <q-input v-model="weekendOpenTime" color="brown-5" dense filled type="time"/>
                   </div>
-                </template>
-                <template v-if="weekendTime" v-slot:append>
-                  <q-icon name="close" @click.stop="weekendTime = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
+                  <div class="col-2 text-center">
+                    ~
+                  </div>
+                  <div class="col-5">
+                    <q-input v-model="weekendCloseTime" color="brown-5" dense filled type="time"/>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -219,23 +237,26 @@
               multiple
               accept=".jpg, image/*"
               @rejected="onRejected"
+              :disable="filesImages.length!==0"
             />
+            <q-btn :disable="filesImages.length===0" label="사진 전부 삭제" @click="removeImgAll"
+            color="primary" class='full-width q-mt-sm' dense/>
           </div>
 
           <div class="col-12 q-mb-md q-pa-sm bg-grey-2">
             <template v-for="(item) in menu">
               <div class='row q-mb-sm q-col-gutter-sm' :key="item.id">
-                <div class='col-4 col-sm-5'>
+                <div class='col-4'>
                   <q-input outlined label="메뉴 이름" dense v-model="item.name"/>
                 </div>
                 <div class='col-3'>
                   <q-input outlined label='타입' dense v-model="item.type"/>
                 </div>
-                <div class='col-2'>
+                <div class='col-3'>
                   <q-input outlined label="가격" type='number' dense v-model="item.price"/>
                 </div>
-                <div class='col-3 col-sm-2 self-center'>
-                  <q-btn label="삭제" color='red' class="full-width" @click='deleteMenu(item.id)'/>
+                <div class='col-2 self-center'>
+                  <q-btn icon="delete" color='red' class="full-width" @click='deleteMenu(item.id)'/>
                 </div>
               </div>
             </template>
@@ -268,10 +289,11 @@ import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
 import DaumPostcode from 'components/Dialog/DaumPostcodeDialog';
 import API from 'src/repositories/CafeInfo/NormalAPI';
+import axios from 'axios';
 
 export default {
   name: 'CafeNormalInfo',
-
+  
   components: {
     Header,
     Confirm,
@@ -285,6 +307,8 @@ export default {
   data () {
     return {
       title: '카페 기본 정보 입력 / 수정',
+      googleKey: 'AIzaSyBcpTssmSZ9T_S5wf51tdVfoEhWTcOGo7s',
+      firstRegister: false,
 
       address: '',
       hashTag: '',
@@ -292,15 +316,19 @@ export default {
       tell: '',
       name: '',
       coupon: '',
+      couponPassword: '',
       businessEvent: '',
       instagram: '',
       review: '',
-      weekdayTime: '',
-      weekendTime: '',
+      weekOpenTime: '',
+      weekCloseTime: '',
+      weekendOpenTime: '',
+      weekendCloseTime: '',
       closedDay: '',
       cafeInfo: '',
-
-      filesImages: null,
+      removeImg: 'N',
+      latitude: '',
+      filesImages: [],
 
       isDialog: false,
       isPostcode: false,
@@ -343,10 +371,25 @@ export default {
   },
 
   created() {
-    this.initCafeInfo();
+    if(this.getCafeSrl === 'firstPeople') {
+      this.firstRegister = true;
+      console.log('카페 생성모드');
+    } else {
+      this.initCafeInfo();
+    }
   },
 
   methods: {
+    getGeoCode() {
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(this.address)}&key=${this.googleKey}`)
+        .then(res => {
+          console.log(res);
+          const data = res.data.results[0];
+          this.latitude = `${data.geometry.location.lat},${data.geometry.location.lng}`;
+          console.log(this.latitude);
+        }).catch(err => err);
+    },
+
     async initCafeInfo() {
       const body = {
         cafe_srl: this.getCafeSrl,
@@ -357,7 +400,7 @@ export default {
         const data = apiResult.data[0];
         this.name = data.cafe_name;
         data.cafe_tag.forEach(item => {
-          this.hashTags.push(item.tag_content);
+          this.hashTags.push({ content: item.tag_content });
         });
         this.address = data.cafe_address;
         this.closedDay = data.cafe_closed_date;
@@ -365,8 +408,12 @@ export default {
         this.instagram = data.cafe_sns_account;
         this.tell = data.cafe_phone;
         this.review = data.cafe_oneline_intro;
-        this.weekdayTime = data.cafe_week_workday;
-        this.weekendTime = data.cafe_weekend_workday;
+        const weekTime = data.cafe_week_workday.split(' ');
+        this.weekOpenTime = weekTime[0];
+        this.weekCloseTime = weekTime[2];
+        const weekendTime = data.cafe_weekend_workday.split(' ');
+        this.weekendOpenTime = weekendTime[0];
+        this.weekendCloseTime = weekendTime[2];
         this.cafeInfo = data.cafe_intro;
         for(let i = 0; i < data.cafe_info.length; i++) {
           if(data.cafe_info[i] === '1') {
@@ -382,33 +429,152 @@ export default {
         data.menu.forEach((item, idx) => {
           this.menu.push({ id: idx, name: item.menu_name, price: item.menu_price, type: item.menu_type });
         });
+        this.getImage(data.cafe_image_count);
+      }
+    },
+
+    async getImage(imageCount) {
+      for(let i = 1; i <= imageCount; i++) {
+        const queryString = `image_category_1=cafe&image_category_2=${this.storySrl}&image_count=${i}`;
+        const apiResult = await API.getImage(queryString);
+        if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+          console.log(apiResult);
+        } else {
+          console.log(apiResult.response);
+        }
       }
     },
 
     onClickSave () {
       this.msg = '저장하시겠습니까?';
-      this.confirmMethod = this.createAdmin;
+      this.confirmMethod = this.saveCafe;
       this.isConfirm = true;
+      console.log(this.hashTags);
     },
 
-    createAdmin() {
-      if(!this.id) {
-        this.msg = 'ID를 입력해주세요';
+    async saveCafe() {
+      console.log(this.getGeoCode(this.address));
+      if(!this.name) {
+        this.msg = '카페명을 입력해주세요';
         this.isAlert = true;
-      } else if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
-        this.msg = '비밀번호를 확인해주세요!';
+      } else if(this.hashTags.length === 0) {
+        this.msg = '해시태그를 추가해주세요!';
         this.isAlert = true;
-      }else if(!this.email) {
-        this.msg = '이메일을 입력해주세요!';
+      }else if(!this.tell) {
+        this.msg = '전화번호 입력해주세요!';
         this.isAlert = true;
-      } else if(!this.name) {
-        this.msg = '이름을 입력해주세요!';
+      } else if(!this.review) {
+        this.msg = '한줄평을 입력해주세요!';
         this.isAlert = true;
-      } else if(!this.address1 || !this.zipCode) {
+      } else if(!this.address) {
         this.msg = '주소를 입력해주세요!';
         this.isAlert = true;
+      } else if(!this.weekOpenTime || !this.weekCloseTime || !this.weekendOpenTime || !this.weekendCloseTime) {
+        this.msg = '영업시간을 입력해주세요!';
+        this.isAlert = true;  
+      } else if(!this.closedDay) {
+        this.msg = '휴무일을 입력해주세요!';
+        this.isAlert = true;
       } else {
-        console.log('created!');
+        let category = '';
+        this.categories.forEach(item => {
+          if(item.value) {
+            category += (item.label + ' ');
+          }
+        });
+        category = category.slice(0, -1);
+
+        let cafeInfo = '';
+        this.convenience.forEach((item, idx) => {
+          if(item.value) {
+            cafeInfo += '1';
+          } else {
+            cafeInfo += '0';
+          }
+        });
+        cafeInfo += this.toilet;
+
+        const cafeMenu = [];
+        this.menu.forEach(item => {
+          cafeMenu.push({ menu_type: item.type, menu_name: item.name, menu_price: item.price });
+        });
+
+        if(this.firstRegister) { // register
+          const body = {
+            cafe_name: this.name,
+            cafe_address: this.address,
+            cafe_category: category,
+            cafe_sns_account: this.instagram,
+            cafe_phone: this.tell,
+            cafe_intro: this.cafeInfo,
+            cafe_oneline_intro: this.review,
+            cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
+            cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
+            cafe_closed_date: this.closedDay,
+            cafe_info: cafeInfo,
+            cafe_latitude: this.latitude,
+            cafe_menu: cafeMenu,
+            cafe_tag: this.hashTags,
+            reg_file: this.filesImages,
+          };
+          const apiResult = await API.registerCafe(body);
+          if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+            console.log(apiResult);
+            const couponBody = {
+              cafe_srl: this.getCafeSrl,
+              request_type: 'coupon_reg',
+              request_value: this.couponPassword,
+              coupon_percent: this.coupon,
+            };
+            const couponResult = await API.setCoupon(couponBody);
+            if(couponResult.status === 200 && couponResult.statusText === 'OK') {
+              console.log('Coupone: ', couponResult);
+              this.$router.push({ name: 'statistics' });
+            } else {
+              console.log(couponResult.response);
+            }
+          } else {
+            console.log(apiResult.response);
+          }
+        } else { // save
+          const body = {
+            cafe_srl: this.getCafeSrl,
+            cafe_name: this.name,
+            cafe_address: this.address,
+            cafe_category: category,
+            cafe_sns_account: this.instagram,
+            cafe_phone: this.tell,
+            cafe_intro: this.cafeInfo,
+            cafe_oneline_intro: this.review,
+            cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
+            cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
+            cafe_closed_date: this.closedDay,
+            cafe_info: cafeInfo,
+            cafe_menu: cafeMenu,
+            cafe_tag: this.hashTags,
+            reg_file: this.filesImages,
+            remove_image_flag: this.removeImg,
+          };
+          const apiResult = await API.modifyCafe(body);
+          if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+            console.log(apiResult);
+            const couponBody = {
+              cafe_srl: this.getCafeSrl,
+              request_type: 'coupon_reg',
+              request_value: this.couponPassword,
+              coupon_percent: this.coupon,
+            };
+            const couponResult = await API.setCoupon(couponBody);
+            if(couponResult.status === 200 && couponResult.statusText === 'OK') {
+              console.log('Coupone: ', couponResult);
+              this.$router.go();
+            } else {
+              console.log(couponResult.response);
+            }
+          } else{
+            console.log(apiResult.response);
+          }
+        }
       }
     },
 
@@ -449,7 +615,7 @@ export default {
 
     inputHashTag() {
       if(this.hashTags.indexOf(this.hashTag) === -1) {
-        this.hashTags.push(this.hashTag);
+        this.hashTags.push({ content: this.hashTag });
       }
       this.hashTag = '';
     },
@@ -463,9 +629,15 @@ export default {
     },
 
     getPostInfo(info) {
-      // console.log(info);
+      console.log(info);
       this.isPostcode = false;
       this.address = info.roadAddress;
+      this.getGeoCode(this.address);
+    },
+
+    removeImgAll() {
+      this.filesImages = [];
+      this.removeImg = 'Y';
     },
   },
 };

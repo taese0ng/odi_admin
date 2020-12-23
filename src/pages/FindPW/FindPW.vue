@@ -22,7 +22,8 @@
           </div>
           
           <div class="col-3 text-center q-mb-md self-center">
-              <q-btn color='primary' label="인증번호요청" class="btn-sm" @click='requestNum'/>
+              <q-btn color='primary' label="인증번호요청" class="btn-sm" 
+               :disable="!passwordAble" @click='requestNum'/>
           </div>
         </div>
 
@@ -45,7 +46,7 @@
           </div>
 
           <div class="col-3 text-center q-mb-md self-center">
-              <q-btn color='primary' label="인증하기" class="btn-sm" @click="authenticate"/>
+              <q-btn :disable="certifiedAble" color='primary' label="인증하기" class="btn-sm" @click="authenticate"/>
           </div>
         </div>
 
@@ -91,7 +92,7 @@
       </q-card-section>
 
       <q-card-actions class="row items-center justify-end q-pa-sm">
-        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickCreate">
+        <q-btn color="blue-grey-8" class="btn-sm" @click="onClickModify">
           비밀번호 변경
         </q-btn>
         <q-btn color="blue-grey-8" class="btn-sm" @click="onClickCancel">
@@ -113,6 +114,7 @@ import Confirm from 'components/Confirm/Confirm';
 import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
+import API from 'src/repositories/FindPW/FindPWAPI';
 
 export default {
   name: 'FindPW',
@@ -147,18 +149,28 @@ export default {
   },
 
   methods: {
-    onClickCreate () {
-      this.msg = '생성하시겠습니까?';
-      this.confirmMethod = this.createAdmin;
+    onClickModify () {
+      this.msg = '비밀번호를 변경 하시겠습니까?';
+      this.confirmMethod = this.modifyPassword;
       this.isConfirm = true;
     },
 
-    createAdmin() {
+    async modifyPassword() {
       if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm) {
         this.msg = '비밀번호를 확인해주세요!';
         this.isAlert = true;
       } else {
-        console.log('created!');
+        const body = {
+          reg_type: 'business',
+          phonenum: this.phone,
+          password: this.password,
+        };
+        const apiResult = await API.changePassword(body);
+        if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+          console.log(apiResult);
+        } else {
+          console.log(apiResult.response);
+        }
       }
     },
 
