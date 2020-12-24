@@ -76,11 +76,12 @@
               <div class="col-12">
                   <q-file
                       dense
+                      v-model='img'
                       color="blue-grey-9"
                       filled
                       label-slot
                       accept=".jpg, image/*"
-                      @input="(img)=>{inputImg(img)}"
+                      @input="inputImg"
                       @rejected="onRejected"
                   >
                     <template v-slot:label>
@@ -282,6 +283,7 @@ export default {
 
   methods: {
     onClickCreate () {
+      console.log(this.businessNum);
       this.msg = '생성하시겠습니까?';
       this.confirmMethod = this.createAdmin;
       this.isConfirm = true;
@@ -307,7 +309,7 @@ export default {
         this.msg = '과세구분을 확인해주세요!';
         this.isAlert = true;
       } else if(!this.businessNum) {
-        this.msg = '사업자읃록번호를 확인해주세요!';
+        this.msg = '사업자등록번호를 확인해주세요!';
         this.isAlert = true;
       } else if(!this.businessType) {
         this.msg = '업태를 확인해주세요!';
@@ -331,26 +333,11 @@ export default {
         body.append('birth', this.birth.replace(/-/gi, ''));
         body.append('business_type', this.businessType);
         body.append('business_type_detail', this.businessEvent);
-        body.append('business_reg_num', this.businessNum);
+        body.append('reg_num', this.businessNum);
         body.append('tax_classification', this.selectedTax);
         body.append('reg_file', this.img);
         body.append('is_ad', this.agreeAD ? 'Y' : 'N');
-        
-        // const body = {
-        //   reg_type: 'business',
-        //   id: this.id,
-        //   password: this.password,
-        //   email: this.email,
-        //   nick_name: this.name,
-        //   phonenum: this.phone,
-        //   birth: this.birth.replace(/-/gi, ''),
-        //   business_type: this.businessType,
-        //   business_type_detail: this.businessEvent,
-        //   business_reg_num: this.businessNum,
-        //   tax_classification: this.selectedTax,
-        //   is_ad: this.agreeAD,
-        //   reg_file: this.img,
-        // };
+
         const apiResult = await API.signup(body);
         // console.log(apiResult);
         if(apiResult.status === 200) {
@@ -391,9 +378,7 @@ export default {
     },
 
     inputImg(img) {
-      console.log(img);
-      this.img = img;
-      this.imgSrc = URL.createObjectURL(img);
+      this.imgSrc = URL.createObjectURL(this.img);
     },
   },
 };

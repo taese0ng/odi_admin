@@ -23,11 +23,10 @@
                             label="이미지를 선택하세요."
                             accept=".jpg, image/*"
                             @rejected="onRejected"
-                            :disable="img.length!==0"
                         />
                     </div>
                     <div class="col-3">
-                      <q-btn :disable="img.length===0" label="사진 전부 삭제" @click="removeImgAll"
+                      <q-btn label="사진 전부 삭제" @click="removeImgAll"
                         color="red" class='full-width' dense/>
                     </div>
                 </div>
@@ -57,6 +56,7 @@ import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import API from 'src/repositories/CafeStory/DetailAPI';
 import Carousel from 'components/Card/Carousel';
+import { image } from 'suneditor/src/plugins';
 
 export default {
   name: 'StoryDetail',
@@ -111,12 +111,21 @@ export default {
     },
 
     async onClickUpload() {
-      const body = {
-        cafe_srl: this.getCafeSrl,
-        story_srl: this.storySrl,
-        story_content: this.contents,
-        image_file: this.img,
-      };
+      // const body = {
+      //   cafe_srl: this.getCafeSrl,
+      //   story_srl: this.storySrl,
+      //   story_content: this.contents,
+      //   image_file: this.img,
+      // };
+
+      const body = new FormData();
+      body.append('cafe_srl', this.getCafeSrl);
+      body.append('story_srl', this.storySrl);
+      body.append('story_content', this.contents);
+      if(this.img.length !== 0) {
+        body.append('remove_image_flag', 'Y');
+        this.img.forEach(item => body.append('image_file', item));
+      }
 
       const apiResult = await API.modifyStory(body);
 
@@ -133,6 +142,7 @@ export default {
 
     removeImgAll() {
       this.img = [];
+      this.imgUrls = [];
     },
   },
 };

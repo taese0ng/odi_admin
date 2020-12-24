@@ -10,20 +10,19 @@ export default ({
 
   registerCafe(body) {
     const accessToken = Cookies.get('access_token');
-    const headers = { headers: { Authorization: accessToken } };
+    const headers = { headers: { Authorization: accessToken, 'Content-Type': 'multipart/form-data' } };
     return axios.post('/api/cafe/register', body, headers);
   },
 
-  modifyCafe(body) {
+  modifyCafe(body, mode) {
     const accessToken = Cookies.get('access_token');
-    const headers = { headers: { Authorization: accessToken } };
+    let headers = {};
+    if(mode === 1) {
+      headers = { headers: { Authorization: accessToken } };
+    } else {
+      headers = { headers: { Authorization: accessToken, 'Content-Type': 'multipart/form-data' } };
+    }
     return axios.post('/api/cafe/modify', body, headers);
-  },
-
-  getImage(body) {
-    const accessToken = Cookies.get('access_token');
-    const headers = { headers: { Authorization: accessToken } };
-    return axios.get('/api/normal/get_image', body, headers);
   },
 
   setCoupon(body) {

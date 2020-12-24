@@ -15,8 +15,8 @@
     <q-drawer
       v-model="drawer"
       :width="300"
-      :breakpoint="500"
-      bordered
+      :breakpoint="700"
+      elevated
       content-class="bg-white"
     >
       <!-- show-if-above 없애야 닫힌 창으로 먼저 나옴 -->

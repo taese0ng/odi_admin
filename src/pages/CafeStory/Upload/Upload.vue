@@ -76,12 +76,16 @@ export default {
 
     async onClickUpload() {
       console.log(this.img);
-      const body = {
-        cafe_srl: this.getCafeSrl,
-        story_content: this.contents,
-        image_file: this.img,
-      };
+      // const body = {
+      //   cafe_srl: this.getCafeSrl,
+      //   story_content: this.contents,
+      //   image_file: this.img,
+      // };
 
+      const body = new FormData();
+      body.append('cafe_srl', this.getCafeSrl);
+      body.append('story_content', this.contents);
+      this.img.forEach((item) => body.append('image_file', item));
       const apiResult = await API.uploadStory(body);
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {

@@ -4,6 +4,12 @@
 
     <!-- <Table title="" :rows="rows" :columns="columns" :selectedItems="selectedItems"
            @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"/> -->
+    <div class="row justify-center q-ma-xl" v-if="loading">
+      <q-spinner
+        color="primary"
+        size="3em"
+      />
+    </div>
     <div class="maxContainer-md q-mx-auto">
       <template v-for='item in rows'>
         <Card :key="item.id" :data="item" mode='review' class='q-my-md'/>
@@ -38,6 +44,7 @@ export default {
   data () {
     return {
       title: '리뷰 탐색',
+      loading: true,
 
       isConfirm: false,
       isAlert: false,
@@ -100,6 +107,9 @@ export default {
         });
 
         this.rows = rows;
+        this.loading = false;
+      } else {
+        console.log(apiResult.response);
       }
     },
 

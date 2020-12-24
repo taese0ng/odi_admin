@@ -8,7 +8,7 @@
           <div class="col-12 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="name"
-              color="blue-grey-9" ref="name" :disable='!firstRegister'>
+              color="blue-grey-9" ref="name">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
                     카페명
@@ -58,7 +58,7 @@
           <div class="col-12 q-mb-md">
             <div class="row q-col-gutter-sm">
               <div class="col-3">
-                <q-btn :disable='!firstRegister' color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
+                <q-btn color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
               </div>
               <div class="col-9 text-grey">
                 <q-input label-slot filled dense v-model="address"
@@ -237,8 +237,10 @@
               multiple
               accept=".jpg, image/*"
               @rejected="onRejected"
+              @input="val => inputFile(val)"
               :disable="filesImages.length!==0"
             />
+            <Carousel v-if="imgUrls.length !== 0" :imgUrls="imgUrls" class='q-mt-sm'/>
             <q-btn :disable="filesImages.length===0" label="사진 전부 삭제" @click="removeImgAll"
             color="primary" class='full-width q-mt-sm' dense/>
           </div>
@@ -288,6 +290,7 @@ import Alert from 'components/Alert/Alert';
 import Dialog from 'components/Dialog/Dialog';
 import defaultProfile from 'assets/defaultProfile.png';
 import DaumPostcode from 'components/Dialog/DaumPostcodeDialog';
+import Carousel from 'components/Card/Carousel';
 import API from 'src/repositories/CafeInfo/NormalAPI';
 import axios from 'axios';
 
@@ -300,6 +303,7 @@ export default {
     Alert,
     Dialog,
     DaumPostcode,
+    Carousel,
   },
 
   mixins: [rootStoreHelper],
@@ -367,6 +371,7 @@ export default {
       toilet: '0',
 
       menu: [],
+      imgUrls: [],
     };
   },
 
@@ -383,10 +388,8 @@ export default {
     getGeoCode() {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(this.address)}&key=${this.googleKey}`)
         .then(res => {
-          console.log(res);
           const data = res.data.results[0];
           this.latitude = `${data.geometry.location.lat},${data.geometry.location.lng}`;
-          console.log(this.latitude);
         }).catch(err => err);
     },
 
@@ -403,6 +406,7 @@ export default {
           this.hashTags.push({ content: item.tag_content });
         });
         this.address = data.cafe_address;
+        this.getGeoCode(this.address);
         this.closedDay = data.cafe_closed_date;
         this.coupon = data.cafe_coupon;
         this.instagram = data.cafe_sns_account;
@@ -433,15 +437,11 @@ export default {
       }
     },
 
-    async getImage(imageCount) {
+    getImage(imageCount) {
       for(let i = 1; i <= imageCount; i++) {
-        const queryString = `image_category_1=cafe&image_category_2=${this.storySrl}&image_count=${i}`;
-        const apiResult = await API.getImage(queryString);
-        if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-          console.log(apiResult);
-        } else {
-          console.log(apiResult.response);
-        }
+        const queryString = `https://cafeodi.co.kr/api/normal/get_image?image_category_1=cafe&image_category_2=${this.getCafeSrl}&image_count=${i}`;
+        this.imgUrls.push(queryString);
+        this.filesImages.push(queryString);
       }
     },
 
@@ -453,7 +453,6 @@ export default {
     },
 
     async saveCafe() {
-      console.log(this.getGeoCode(this.address));
       if(!this.name) {
         this.msg = '카페명을 입력해주세요';
         this.isAlert = true;
@@ -515,9 +514,9 @@ export default {
             cafe_latitude: this.latitude,
             cafe_menu: cafeMenu,
             cafe_tag: this.hashTags,
-            reg_file: this.filesImages,
+            // reg_file: this.filesImages,
           };
-          const apiResult = await API.registerCafe(body);
+          const apiResult = await API.registerCafe(body, 1);
           if(apiResult.status === 200 && apiResult.statusText === 'OK') {
             console.log(apiResult);
             const couponBody = {
@@ -528,7 +527,7 @@ export default {
             };
             const couponResult = await API.setCoupon(couponBody);
             if(couponResult.status === 200 && couponResult.statusText === 'OK') {
-              console.log('Coupone: ', couponResult);
+              // console.log('Coupone: ', couponResult);
               this.$router.push({ name: 'statistics' });
             } else {
               console.log(couponResult.response);
@@ -541,6 +540,7 @@ export default {
             cafe_srl: this.getCafeSrl,
             cafe_name: this.name,
             cafe_address: this.address,
+            cafe_latitude: this.latitude,
             cafe_category: category,
             cafe_sns_account: this.instagram,
             cafe_phone: this.tell,
@@ -552,12 +552,23 @@ export default {
             cafe_info: cafeInfo,
             cafe_menu: cafeMenu,
             cafe_tag: this.hashTags,
-            reg_file: this.filesImages,
-            remove_image_flag: this.removeImg,
+            // reg_file: this.filesImages,
+            // remove_image_flag: this.removeImg,
           };
-          const apiResult = await API.modifyCafe(body);
+          console.log(body);
+          const apiResult = await API.modifyCafe(body, 1);
           if(apiResult.status === 200 && apiResult.statusText === 'OK') {
             console.log(apiResult);
+            if(this.removeImg === 'Y') {
+              const imgBody = new FormData();
+              // imgBody.append('reg_file', this.filesImages);
+              this.filesImages.forEach(item => imgBody.append('reg_file', item));
+              imgBody.append('remove_image_flag', this.removeImg);
+              const imageResult = await API.modifyCafe(imgBody, 2);
+              if(imageResult.status === 200 && imageResult.statusText === 'OK') {
+                console.log('imageResult: ', imageResult);
+              }
+            }
             const couponBody = {
               cafe_srl: this.getCafeSrl,
               request_type: 'coupon_reg',
@@ -566,8 +577,8 @@ export default {
             };
             const couponResult = await API.setCoupon(couponBody);
             if(couponResult.status === 200 && couponResult.statusText === 'OK') {
-              console.log('Coupone: ', couponResult);
-              this.$router.go();
+              // console.log('Coupone: ', couponResult);
+              // this.$router.go();
             } else {
               console.log(couponResult.response);
             }
@@ -629,7 +640,6 @@ export default {
     },
 
     getPostInfo(info) {
-      console.log(info);
       this.isPostcode = false;
       this.address = info.roadAddress;
       this.getGeoCode(this.address);
@@ -637,7 +647,14 @@ export default {
 
     removeImgAll() {
       this.filesImages = [];
+      this.imgUrls = [];
       this.removeImg = 'Y';
+    },
+
+    inputFile(imgs) {
+      imgs.forEach(img => {
+        this.imgUrls.push(URL.createObjectURL(img));
+      });
     },
   },
 };

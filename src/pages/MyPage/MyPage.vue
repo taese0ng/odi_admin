@@ -189,10 +189,10 @@
             </div>
           </div>
 
-          <div class="col-12 q-mb-md bg-grey-2 items-center q-pl-xs">
+          <!-- <div class="col-12 q-mb-md bg-grey-2 items-center q-pl-xs">
               <q-checkbox keep-color color="brown-13" v-model="agreeAD"
                   label="광고 이용 여부" class="q-mr-lg"/>
-          </div>
+          </div> -->
         </div>
       </q-card-section>
 
@@ -319,8 +319,11 @@ export default {
         const apiResult = await API.modifyUser(body);
         if(apiResult.status === 200) {
           console.log(apiResult);
+          // this.$router.go();
         } else {
           console.log(apiResult.response);
+          this.msg = '통신에러!';
+          this.isAlert = true;
         }
       }
     },

@@ -3,7 +3,7 @@ import { Cookies } from 'quasar';
 
 export default ({
   signup(body) {
-    const option = { headers: { 'content-type': 'multipart/form-data' } };
+    const option = { headers: { 'Content-Type': 'multipart/form-data' } };
     return axios.post('/auth/register', body, option);
   },
 });
