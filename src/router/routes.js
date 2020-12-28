@@ -81,7 +81,7 @@ const routes = [
       },
       {
         name: 'cafeStoryDetail',
-        path: 'detail:id',
+        path: 'detail',
         component: () => import('pages/CafeStory/Detail/Detail.vue'),
       },
     ],

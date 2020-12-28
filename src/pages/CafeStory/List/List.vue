@@ -132,6 +132,7 @@ export default {
           console.log(target);
           this.$router.push({
             name: 'cafeStoryDetail',
+            query: { id: target.story_srl },
             params: { storySrl: target.story_srl, content: target.story_content, imageCount: target.story_image_count },
           });
         }

@@ -31,6 +31,12 @@
                         color="red" class='full-width' dense/>
                     </div>
                 </div>
+
+                <div class="row q-mb-md" v-if="imgUrls.length !== 0">
+                  <div class="col-12">
+                    <Carousel :imgUrls="imgUrls"/>
+                  </div>
+                </div>
             </q-card-section>
 
             <q-card-actions>
@@ -47,11 +53,14 @@
 import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import API from 'src/repositories/CafeStory/UploadAPI';
+import Carousel from 'components/Card/Carousel';
+
 export default {
   name: 'StoryUpload',
   
   components: {
     Header,
+    Carousel,
   },
   
   mixins: [rootStoreHelper],
@@ -61,6 +70,7 @@ export default {
       title: '카페 스토리 업로드',
       contents: '',
       img: [],
+      imgUrls: [],
     };
   },
 
@@ -97,6 +107,13 @@ export default {
 
     removeImgAll() {
       this.img = [];
+    },
+
+    inputImage() {
+      this.imgUrls = [];
+      this.img.forEach(item => {
+        this.imgUrls.push(URL.createObjectURL(item));
+      });
     },
   },
 };

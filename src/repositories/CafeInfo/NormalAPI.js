@@ -14,14 +14,9 @@ export default ({
     return axios.post('/api/cafe/register', body, headers);
   },
 
-  modifyCafe(body, mode) {
+  modifyCafe(body) {
     const accessToken = Cookies.get('access_token');
-    let headers = {};
-    if(mode === 1) {
-      headers = { headers: { Authorization: accessToken } };
-    } else {
-      headers = { headers: { Authorization: accessToken, 'Content-Type': 'multipart/form-data' } };
-    }
+    const headers = { headers: { Authorization: accessToken, 'Content-Type': 'multipart/form-data' } };
     return axios.post('/api/cafe/modify', body, headers);
   },
 

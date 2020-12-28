@@ -23,6 +23,7 @@
                             label="이미지를 선택하세요."
                             accept=".jpg, image/*"
                             @rejected="onRejected"
+                            @input="inputImage"
                         />
                     </div>
                     <div class="col-3">
@@ -31,7 +32,7 @@
                     </div>
                 </div>
 
-                <div class="row q-mb-md">
+                <div class="row q-mb-md" v-if="imgUrls.length !== 0">
                   <div class="col-12">
                     <Carousel :imgUrls="imgUrls"/>
                   </div>
@@ -77,6 +78,7 @@ export default {
       storySrl: null,
       cafeSrl: null,
       test: null,
+      imageFlag: 'N',
     };
   },
 
@@ -122,8 +124,8 @@ export default {
       body.append('cafe_srl', this.getCafeSrl);
       body.append('story_srl', this.storySrl);
       body.append('story_content', this.contents);
+      body.append('remove_image_flag', this.imageFlag);
       if(this.img.length !== 0) {
-        body.append('remove_image_flag', 'Y');
         this.img.forEach(item => body.append('image_file', item));
       }
 
@@ -141,8 +143,17 @@ export default {
     },
 
     removeImgAll() {
+      this.imageFlag = 'Y';
       this.img = [];
       this.imgUrls = [];
+    },
+
+    inputImage() {
+      this.imgUrls = [];
+      this.imageFlag = 'Y';
+      this.img.forEach(item => {
+        this.imgUrls.push(URL.createObjectURL(item));
+      });
     },
   },
 };

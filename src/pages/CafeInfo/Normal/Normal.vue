@@ -536,39 +536,49 @@ export default {
             console.log(apiResult.response);
           }
         } else { // save
-          const body = {
-            cafe_srl: this.getCafeSrl,
-            cafe_name: this.name,
-            cafe_address: this.address,
-            cafe_latitude: this.latitude,
-            cafe_category: category,
-            cafe_sns_account: this.instagram,
-            cafe_phone: this.tell,
-            cafe_intro: this.cafeInfo,
-            cafe_oneline_intro: this.review,
-            cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
-            cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
-            cafe_closed_date: this.closedDay,
-            cafe_info: cafeInfo,
-            cafe_menu: cafeMenu,
-            cafe_tag: this.hashTags,
-            // reg_file: this.filesImages,
-            // remove_image_flag: this.removeImg,
-          };
-          console.log(body);
-          const apiResult = await API.modifyCafe(body, 1);
+          // const body = {
+          //   cafe_srl: this.getCafeSrl,
+          //   cafe_name: this.name,
+          //   cafe_address: this.address,
+          //   cafe_latitude: this.latitude,
+          //   cafe_category: category,
+          //   cafe_sns_account: this.instagram,
+          //   cafe_phone: this.tell,
+          //   cafe_intro: this.cafeInfo,
+          //   cafe_oneline_intro: this.review,
+          //   cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
+          //   cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
+          //   cafe_closed_date: this.closedDay,
+          //   cafe_info: cafeInfo,
+          //   cafe_menu: cafeMenu,
+          //   cafe_tag: this.hashTags,
+          //   // reg_file: this.filesImages,
+          //   // remove_image_flag: this.removeImg,
+          // };
+          // console.log(body);
+          const body = new FormData();
+          body.append('cafe_srl', this.getCafeSrl);
+          body.append('cafe_name', this.name);
+          body.append('cafe_address', this.address);
+          body.append('cafe_latitude', this.latitude);
+          body.append('cafe_category', category);
+          body.append('cafe_sns_account', this.instagram);
+          body.append('cafe_phone', this.tell);
+          body.append('cafe_intro', this.cafeInfo);
+          body.append('cafe_oneline_intro', this.review);
+          body.append('cafe_week_workday', `${this.weekOpenTime} ~ ${this.weekCloseTime}`);
+          body.append('cafe_weekend_workday', `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`);
+          body.append('cafe_closed_date', this.closeDay);
+          body.append('cafe_info', cafeInfo);
+          body.append('cafe_menu', cafeMenu);
+          body.append('cafe_tag', this.hashTags);
+          if(this.removeImg === 'Y') {
+            body.append('remove_image_flag', this.removeImg);
+            this.filesImages.forEach(item => body.append('reg_file', item));
+          }
+          const apiResult = await API.modifyCafe(body);
           if(apiResult.status === 200 && apiResult.statusText === 'OK') {
             console.log(apiResult);
-            if(this.removeImg === 'Y') {
-              const imgBody = new FormData();
-              // imgBody.append('reg_file', this.filesImages);
-              this.filesImages.forEach(item => imgBody.append('reg_file', item));
-              imgBody.append('remove_image_flag', this.removeImg);
-              const imageResult = await API.modifyCafe(imgBody, 2);
-              if(imageResult.status === 200 && imageResult.statusText === 'OK') {
-                console.log('imageResult: ', imageResult);
-              }
-            }
             const couponBody = {
               cafe_srl: this.getCafeSrl,
               request_type: 'coupon_reg',
