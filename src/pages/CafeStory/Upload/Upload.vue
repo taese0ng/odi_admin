@@ -85,12 +85,7 @@ export default {
     },
 
     async onClickUpload() {
-      console.log(this.img);
-      // const body = {
-      //   cafe_srl: this.getCafeSrl,
-      //   story_content: this.contents,
-      //   image_file: this.img,
-      // };
+      // console.log(this.img);
 
       const body = new FormData();
       body.append('cafe_srl', this.getCafeSrl);

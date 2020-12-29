@@ -222,7 +222,7 @@
     </q-card>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
-    <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
+    <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     <Dialog :isOpen="isDialog" @closeDialog="isDialog=false"/>
   </q-page>
 </template>
@@ -278,12 +278,13 @@ export default {
 
       img: null,
       imgSrc: null,
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
   methods: {
     onClickCreate () {
-      console.log(this.businessNum);
+      // console.log(this.businessNum);
       this.msg = '생성하시겠습니까?';
       this.confirmMethod = this.createAdmin;
       this.isConfirm = true;
@@ -341,9 +342,18 @@ export default {
         const apiResult = await API.signup(body);
         // console.log(apiResult);
         if(apiResult.status === 200) {
-          console.log(apiResult);
+          // console.log(apiResult);
           if(apiResult.statusText === 'OK') {
-            this.$router.push({ name: 'login' });
+            if(apiResult.data.result === 'exist id') {
+              this.msg = '존재하는 아이디입니다.';
+              this.isAlert = true;
+            } else {
+              this.msg = '회원가입에 성공하였습니다.';
+              this.isAlert = true;
+              this.closeAlert = () => {
+                this.$router.push({ name: 'login' });
+              };
+            }
           } else {
             this.msg = '회원가입이 실패하였습니다.';
             this.isAlert = true;
@@ -365,7 +375,7 @@ export default {
     },
 
     onClickAddressSearch () {
-      console.log('주소검색');
+      // console.log('주소검색');
     },
 
     onRejected (rejectedEntries) {

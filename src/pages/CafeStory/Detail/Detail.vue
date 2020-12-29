@@ -48,7 +48,7 @@
                 </div>
             </q-card-actions>
         </q-card>
-
+        <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     </q-page>
 </template>
 
@@ -58,6 +58,7 @@ import Header from 'components/Header/Header';
 import API from 'src/repositories/CafeStory/DetailAPI';
 import Carousel from 'components/Card/Carousel';
 import { image } from 'suneditor/src/plugins';
+import Alert from 'components/Alert/Alert';
 
 export default {
   name: 'StoryDetail',
@@ -65,6 +66,7 @@ export default {
   components: {
     Header,
     Carousel,
+    Alert,
   },
   
   mixins: [rootStoreHelper],
@@ -79,11 +81,14 @@ export default {
       cafeSrl: null,
       test: null,
       imageFlag: 'N',
+      isAlert: false,
+      msg: '',
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
   created() {
-    console.log(this.$route.params);
+    // console.log(this.$route.params);
     this.initStory();
   },
 
@@ -132,8 +137,15 @@ export default {
       const apiResult = await API.modifyStory(body);
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        // console.log(apiResult);
+        this.msg = '카페 수정에 성공하였습니다.';
+        this.isAlert = true;
+        this.closeAlert = () => {
+          this.$router.go();
+        };
       } else {
+        this.msg = '카페 수정에 실패하였습니다.';
+        this.isAlert = true;
         console.log(apiResult.response);
       }
     },

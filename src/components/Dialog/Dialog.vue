@@ -78,7 +78,7 @@ export default {
     },
 
     onClickTableRow(e, row, index) {
-      console.log(row);
+      // console.log(row);
     },
   },
 };

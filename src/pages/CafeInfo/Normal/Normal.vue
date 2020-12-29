@@ -73,7 +73,7 @@
             </div>
           </div>
 
-          <div class="col-12 q-mb-md">
+          <div v-if='!firstRegister' class="col-12 q-mb-md">
             <div class="row q-col-gutter-sm items-center">
               <div class="col-5">
                 <div class="text-grey">
@@ -276,7 +276,7 @@
     </q-card>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
-    <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
+    <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     <Dialog :isOpen="isDialog" @closeDialog="isDialog=false"/>
     <DaumPostcode :isPostcode="isPostcode" @hide="isPostcode=false" @complete="(e)=>getPostInfo(e)"/>
   </q-page>
@@ -372,6 +372,7 @@ export default {
 
       menu: [],
       imgUrls: [],
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
@@ -398,7 +399,7 @@ export default {
         cafe_srl: this.getCafeSrl,
       };
       const apiResult = await API.getCafeInfo(body);
-      console.log(apiResult);
+      // console.log(apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
         const data = apiResult.data[0];
         this.name = data.cafe_name;
@@ -420,11 +421,10 @@ export default {
         this.weekendCloseTime = weekendTime[2];
         this.cafeInfo = data.cafe_intro;
         for(let i = 0; i < data.cafe_info.length; i++) {
-          if(data.cafe_info[i] === '1') {
-            this.convenience[i].value = true;
-          }
           if(i === data.cafe_info.length - 1) {
             this.toilet = data.cafe_info[i];
+          } else if(data.cafe_info[i] === '1') {
+            this.convenience[i].value = true;
           }
         }
         data.cafe_category.split(' ').forEach(item => {
@@ -434,6 +434,8 @@ export default {
           this.menu.push({ id: idx, name: item.menu_name, price: item.menu_price, type: item.menu_type });
         });
         this.getImage(data.cafe_image_count);
+      } else {
+        console.log(apiResult.response);
       }
     },
 
@@ -449,7 +451,7 @@ export default {
       this.msg = '저장하시겠습니까?';
       this.confirmMethod = this.saveCafe;
       this.isConfirm = true;
-      console.log(this.hashTags);
+      // console.log(this.hashTags);
     },
 
     async saveCafe() {
@@ -499,63 +501,38 @@ export default {
         });
 
         if(this.firstRegister) { // register
-          const body = {
-            cafe_name: this.name,
-            cafe_address: this.address,
-            cafe_category: category,
-            cafe_sns_account: this.instagram,
-            cafe_phone: this.tell,
-            cafe_intro: this.cafeInfo,
-            cafe_oneline_intro: this.review,
-            cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
-            cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
-            cafe_closed_date: this.closedDay,
-            cafe_info: cafeInfo,
-            cafe_latitude: this.latitude,
-            cafe_menu: cafeMenu,
-            cafe_tag: this.hashTags,
-            // reg_file: this.filesImages,
-          };
-          const apiResult = await API.registerCafe(body, 1);
+          const body = new FormData();
+          body.append('cafe_name', this.name);
+          body.append('cafe_address', this.address);
+          body.append('cafe_category', category);
+          body.append('cafe_sns_account', this.instagram);
+          body.append('cafe_phone', this.tell);
+          body.append('cafe_intro', this.cafeInfo);
+          body.append('cafe_oneline_intro', this.review);
+          body.append('cafe_week_workday', `${this.weekOpenTime} ~ ${this.weekCloseTime}`);
+          body.append('cafe_weekend_workday', `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`);
+          body.append('cafe_closed_date', this.closedDay);
+          body.append('cafe_info', cafeInfo);
+          body.append('cafe_latitude', this.latitude);
+          body.append('cafe_menu', JSON.stringify(cafeMenu));
+          body.append('cafe_tag', JSON.stringify(this.hashTags));
+          this.filesImages.forEach(item => body.append('reg_file', item));
+          // console.log('cafeInfo: ', cafeInfo);
+          const apiResult = await API.registerCafe(body);
           if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-            console.log(apiResult);
-            const couponBody = {
-              cafe_srl: this.getCafeSrl,
-              request_type: 'coupon_reg',
-              request_value: this.couponPassword,
-              coupon_percent: this.coupon,
-            };
-            const couponResult = await API.setCoupon(couponBody);
-            if(couponResult.status === 200 && couponResult.statusText === 'OK') {
-              // console.log('Coupone: ', couponResult);
-              this.$router.push({ name: 'statistics' });
-            } else {
-              console.log(couponResult.response);
+            // console.log(apiResult);
+            if(apiResult.data.result === 'success') {
+              this.dispatchGetSrl();
+              this.msg = '카페 등록에 성공하였습니다.';
+              this.isAlert = true;
+              this.closeAlert = () => {
+                this.$router.push({ name: 'statistics' });
+              };
             }
           } else {
             console.log(apiResult.response);
           }
         } else { // save
-          // const body = {
-          //   cafe_srl: this.getCafeSrl,
-          //   cafe_name: this.name,
-          //   cafe_address: this.address,
-          //   cafe_latitude: this.latitude,
-          //   cafe_category: category,
-          //   cafe_sns_account: this.instagram,
-          //   cafe_phone: this.tell,
-          //   cafe_intro: this.cafeInfo,
-          //   cafe_oneline_intro: this.review,
-          //   cafe_week_workday: `${this.weekOpenTime} ~ ${this.weekCloseTime}`,
-          //   cafe_weekend_workday: `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`,
-          //   cafe_closed_date: this.closedDay,
-          //   cafe_info: cafeInfo,
-          //   cafe_menu: cafeMenu,
-          //   cafe_tag: this.hashTags,
-          //   // reg_file: this.filesImages,
-          //   // remove_image_flag: this.removeImg,
-          // };
-          // console.log(body);
           const body = new FormData();
           body.append('cafe_srl', this.getCafeSrl);
           body.append('cafe_name', this.name);
@@ -568,17 +545,18 @@ export default {
           body.append('cafe_oneline_intro', this.review);
           body.append('cafe_week_workday', `${this.weekOpenTime} ~ ${this.weekCloseTime}`);
           body.append('cafe_weekend_workday', `${this.weekendOpenTime} ~ ${this.weekendCloseTime}`);
-          body.append('cafe_closed_date', this.closeDay);
+          body.append('cafe_closed_date', this.closedDay);
           body.append('cafe_info', cafeInfo);
-          body.append('cafe_menu', cafeMenu);
-          body.append('cafe_tag', this.hashTags);
+          body.append('cafe_menu', JSON.stringify(cafeMenu));
+          body.append('cafe_tag', JSON.stringify(this.hashTags));
+
           if(this.removeImg === 'Y') {
             body.append('remove_image_flag', this.removeImg);
             this.filesImages.forEach(item => body.append('reg_file', item));
           }
           const apiResult = await API.modifyCafe(body);
           if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-            console.log(apiResult);
+            // console.log(apiResult);
             const couponBody = {
               cafe_srl: this.getCafeSrl,
               request_type: 'coupon_reg',
@@ -588,7 +566,11 @@ export default {
             const couponResult = await API.setCoupon(couponBody);
             if(couponResult.status === 200 && couponResult.statusText === 'OK') {
               // console.log('Coupone: ', couponResult);
-              // this.$router.go();
+              this.msg = '카페 수정에 성공하였습니다.';
+              this.isAlert = true;
+              this.closeAlert = () => {
+                this.$router.go();
+              };
             } else {
               console.log(couponResult.response);
             }
@@ -662,6 +644,8 @@ export default {
     },
 
     inputFile(imgs) {
+      this.removeImg = 'Y';
+      this.imgUrls = [];
       imgs.forEach(img => {
         this.imgUrls.push(URL.createObjectURL(img));
       });

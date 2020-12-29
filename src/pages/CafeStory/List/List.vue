@@ -90,7 +90,7 @@ export default {
       const apiResult = await API.getStoryList(body);
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        // console.log(apiResult);
         const data = apiResult.data;
         this.storyObj = data;
         data.forEach((item, idx) => {
@@ -129,7 +129,7 @@ export default {
       if (targetRow !== null) {
         if (targetRow.srl) {
           const target = this.storyObj.find(x => x.story_srl === targetRow.srl);
-          console.log(target);
+          // console.log(target);
           this.$router.push({
             name: 'cafeStoryDetail',
             query: { id: target.story_srl },
@@ -140,7 +140,7 @@ export default {
     },
 
     onClickDelete(targetRow) {
-      console.log(targetRow);
+      // console.log(targetRow);
       this.msg = '삭제시키겠습니까?';
       this.confirmMethod = () => this.deleteStory(targetRow);
       this.isConfirm = true;
@@ -153,7 +153,7 @@ export default {
       };
       const apiResult = await API.deleteStory(body);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        // console.log(apiResult);
         this.initNormalList();
       } else {
         console.log(apiResult.reponse);

@@ -319,9 +319,10 @@ export default {
         this.makeLikeGraph(data.like_gender_age);
         this.makeViewGraph(data.view_gender_age);
         this.makeCouponGraph(data.coupon_gender_age);
+        this.endLoading();
+      } else {
+        console.log(apiResult.response);
       }
-
-      this.endLoading();
     },
 
     makeLikeGraph(data) {

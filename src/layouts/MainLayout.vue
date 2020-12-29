@@ -13,6 +13,7 @@
     </q-header>
 
     <q-drawer
+      v-if="getLoginInfo"
       v-model="drawer"
       :width="300"
       :breakpoint="700"

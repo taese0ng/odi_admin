@@ -205,7 +205,7 @@
     </q-card>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
-    <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
+    <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     <Dialog :isOpen="isDialog" @closeDialog="isDialog=false"/>
   </q-page>
 </template>
@@ -261,6 +261,7 @@ export default {
       confirmMethod: null,
     
       agreeAD: false,
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
@@ -273,7 +274,7 @@ export default {
       const apiResult = await API.getUserInfo();
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        // console.log(apiResult);
         const data = apiResult.data;
         this.id = data.business_id;
         this.email = data.business_email;
@@ -318,8 +319,12 @@ export default {
         };
         const apiResult = await API.modifyUser(body);
         if(apiResult.status === 200) {
-          console.log(apiResult);
-          // this.$router.go();
+          // console.log(apiResult);
+          this.msg = '비밀번호 변경에 성공하였습니다.';
+          this.isAlert = true;
+          this.closeAlert = () => {
+            this.$router.go();
+          };
         } else {
           console.log(apiResult.response);
           this.msg = '통신에러!';
@@ -336,16 +341,27 @@ export default {
       this.isConfirm = false;
     },
 
-    async onClickWithdrawal() {
-      console.log('탈퇴');
-      const apiResult = await API.removeAccount();
-      if(apiResult.status === 200 && apiResult.data.result === 'success') {
-        Cookies.remove('access_token');
-      } else {
-        console.log(apiResult.response);
-        this.msg = '통신에러!';
-        this.isAlert = true;
-      }
+    onClickWithdrawal() {
+      // console.log('탈퇴');
+      this.msg = '정말 탈퇴하시겠습니까?';
+      this.confirmMethod = async() => {
+        const apiResult = await API.removeAccount();
+        console.log(apiResult);
+        if(apiResult.status === 200 && apiResult.statusText === 'OK') {
+          const option = {
+            path: '/',
+          };
+          Cookies.remove('access_token', option);
+          this.setIsLogin({ value: false });
+          this.setCafeSrl({ cafe_srl: null, cafe_name: 'odiAdmin' });
+          this.$router.push({ name: 'login' });
+        } else {
+          console.log(apiResult.response);
+          this.msg = '통신에러!';
+          this.isAlert = true;
+        }
+      };
+      this.isConfirm = true;
     },
 
     async passwordCheck() {

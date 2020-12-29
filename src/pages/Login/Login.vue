@@ -85,7 +85,7 @@ export default {
         const apiResult = await API.login(body);
 
         if(apiResult.status === 200) {
-          console.log(apiResult);
+          // console.log(apiResult);
           if(apiResult.data.result === 'success') {
             const option = {
               expires: '10h',
@@ -95,6 +95,10 @@ export default {
             this.$router.push({ 
               name: 'statistics', 
             });
+          } else {
+            this.msg = '로그인에 실패하였습니다.';
+            this.isAlert = true;
+            this.$refs.id.focus();
           }
         } else {
           this.msg = '통신에 문제가 발생하였습니다.';

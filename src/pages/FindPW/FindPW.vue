@@ -103,7 +103,7 @@
     </q-card>
 
     <Confirm v-if="isConfirm" :msg="msg" :confirmMethod="confirmMethod" @closeConfirm="closeConfirm"/>
-    <Alert v-if="isAlert" :msg="msg" @closeAlert="isAlert = false"/>
+    <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     <Dialog :isOpen="isDialog" @closeDialog="isDialog=false"/>
   </q-page>
 </template>
@@ -145,6 +145,7 @@ export default {
       phoneAble: false,
       certifiedAble: true,
       passwordAble: true,
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
@@ -167,8 +168,15 @@ export default {
         };
         const apiResult = await API.changePassword(body);
         if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-          console.log(apiResult);
+          this.msg = '비밀번호 변경에 성공하였습니다.';
+          this.isAlert = true;
+          this.closeAlert = () => {
+            this.$router.push({ name: 'login' });
+          };
+          // console.log(apiResult);
         } else {
+          this.msg = '비밀번호 변경에 실패하였습니다.';
+          this.isAlert = true;
           console.log(apiResult.response);
         }
       }
