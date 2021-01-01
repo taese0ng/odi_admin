@@ -1,9 +1,6 @@
 <template>
   <q-page padding>
     <Header :title="title" class="q-mb-lg"/>
-
-    <!-- <Table title="" :rows="rows" :columns="columns" :selectedItems="selectedItems"
-           @selection="(targetSelectedItems) => this.selectedItems = targetSelectedItems"/> -->
     <div class="row justify-center q-ma-xl" v-if="loading">
       <q-spinner
         color="primary"
@@ -71,20 +68,11 @@ export default {
   },
 
   created() {
-    // this.initColumns();
     this.initNormalList();
   },
 
   methods: {
-    // initColumns() {
-    //   this.columnLabels.forEach((label) => {
-    //     const data = { label: label, align: 'center' };
-    //     this.columns.push(data);
-    //   });
-    // },
-
     async initNormalList() {
-      // const route = this.$route.query;
       const rows = [];
 
       const body = {
@@ -103,7 +91,7 @@ export default {
             date: item.review_reg_date,
             imgCount: item.review_image_count,
           };
-          rows.push(row);
+          rows.unshift(row);
         });
 
         this.rows = rows;

@@ -28,7 +28,7 @@
                 color="blue-grey-9" ref="hashTag">
                   <template v-slot:label>
                     <div class="row all-pointer-events items-center necessary">
-                      해시태그
+                      해시태그 (입력 후 Enter를 클릭하세요.)
                     </div>
                   </template>
                   <template v-if="hashTag" v-slot:append>
@@ -57,10 +57,10 @@
     
           <div class="col-12 q-mb-md">
             <div class="row q-col-gutter-sm">
-              <div class="col-3">
+              <div class="col-4">
                 <q-btn color="blue-grey-6" label="주소검색" class="full-width" @click="onClickAddressSearch"/>
               </div>
-              <div class="col-9 text-grey">
+              <div class="col-8 text-grey">
                 <q-input label-slot filled dense v-model="address"
                 color="blue-grey-9" ref="address" disable>
                   <template v-slot:label>
@@ -131,23 +131,6 @@
           </div>
 
         <div class="row ">
-
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-input label-slot filled dense v-model="review"
-                       color="blue-grey-9" ref="review">
-                <template v-slot:label>
-                  <div class="row all-pointer-events items-center necessary">
-                    한줄평
-                  </div>
-                </template>
-                <template v-if="review" v-slot:append>
-                  <q-icon name="close" @click.stop="review = ''" class="cursor-pointer"/>
-                </template>
-              </q-input>
-            </div>
-          </div>
-
           <div class="col-12 q-mb-md">
             <div class="row items-center q-col-gutter-sm">
               <div class="col-3 q-pl-md necessary">
@@ -225,6 +208,22 @@
             </div>
           </div>
 
+          <div class="col-12 q-mb-md">
+            <div class="text-grey">
+              <q-input label-slot filled dense v-model="review"
+                       color="blue-grey-9" ref="review">
+                <template v-slot:label>
+                  <div class="row all-pointer-events items-center necessary">
+                    우리 카페 한줄소개
+                  </div>
+                </template>
+                <template v-if="review" v-slot:append>
+                  <q-icon name="close" @click.stop="review = ''" class="cursor-pointer"/>
+                </template>
+              </q-input>
+            </div>
+          </div>
+
           <div class="col-12 q-mb-md bg-grey-2 q-pa-sm">
             <q-input outlined autogrow type='textarea' label='카페안내' v-model='cafeInfo'/>
           </div>
@@ -238,9 +237,10 @@
               accept=".jpg, image/*"
               @rejected="onRejected"
               @input="val => inputFile(val)"
-              :disable="filesImages.length!==0"
             />
+
             <Carousel v-if="imgUrls.length !== 0" :imgUrls="imgUrls" class='q-mt-sm'/>
+
             <q-btn :disable="filesImages.length===0" label="사진 전부 삭제" @click="removeImgAll"
             color="primary" class='full-width q-mt-sm' dense/>
           </div>
@@ -248,11 +248,11 @@
           <div class="col-12 q-mb-md q-pa-sm bg-grey-2">
             <template v-for="(item) in menu">
               <div class='row q-mb-sm q-col-gutter-sm' :key="item.id">
+                <div class='col-3'>
+                  <q-input outlined label='분류 ex)음료,디저트' dense v-model="item.type"/>
+                </div>
                 <div class='col-4'>
                   <q-input outlined label="메뉴 이름" dense v-model="item.name"/>
-                </div>
-                <div class='col-3'>
-                  <q-input outlined label='타입' dense v-model="item.type"/>
                 </div>
                 <div class='col-3'>
                   <q-input outlined label="가격" type='number' dense v-model="item.price"/>
@@ -310,7 +310,7 @@ export default {
 
   data () {
     return {
-      title: '카페 기본 정보 입력 / 수정',
+      title: '카페 정보 수정',
       googleKey: 'AIzaSyBcpTssmSZ9T_S5wf51tdVfoEhWTcOGo7s',
       firstRegister: false,
 

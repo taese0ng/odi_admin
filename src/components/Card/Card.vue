@@ -1,8 +1,7 @@
 <template>
     <div>
         <q-card class="my-card">
-            <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
-            <Carousel :imgUrls="imgUrl"/>
+            <Carousel v-if="imgUrl.length > 0" :imgUrls="imgUrl"/>
             <q-card-section>
                 <div v-if="data.nick" class="row no-wrap items-center">
                     <div class="col text-h6 ellipsis">
@@ -78,7 +77,7 @@ export default {
 
   data() {
     return{
-      imgUrl: [],
+      imgUrl: ['https://cafeodi.co.kr/api/normal/get_image?image_category_1=story&image_category_2=6&image_count=1'],
     };
   },
 

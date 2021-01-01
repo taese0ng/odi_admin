@@ -8,7 +8,7 @@
         infinite
       >
         <template v-for="(url,idx) in imgUrls">
-          <q-carousel-slide :key="url" :name='idx+1' :img-src='url' crossorigin="anonymous" header='Content-Type: application/json'/>    
+          <q-carousel-slide :key="url" :name='idx+1' :img-src='url' crossorigin="anonymous" header='Content-Type: application/x-www-form-urlencoded'/>    
         </template>
       </q-carousel>
     </div>

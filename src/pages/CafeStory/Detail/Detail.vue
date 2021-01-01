@@ -27,7 +27,7 @@
                         />
                     </div>
                     <div class="col-3">
-                      <q-btn label="사진 전부 삭제" @click="removeImgAll"
+                      <q-btn icon='delete' @click="removeImgAll"
                         color="red" class='full-width' dense/>
                     </div>
                 </div>
@@ -138,13 +138,13 @@ export default {
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
         // console.log(apiResult);
-        this.msg = '카페 수정에 성공하였습니다.';
+        this.msg = '스토리 수정 완료';
         this.isAlert = true;
         this.closeAlert = () => {
-          this.$router.go();
+          this.$router.push({ name: 'cafeStoryList' });
         };
       } else {
-        this.msg = '카페 수정에 실패하였습니다.';
+        this.msg = '스토리 수정 실패';
         this.isAlert = true;
         console.log(apiResult.response);
       }

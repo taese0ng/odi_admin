@@ -46,7 +46,7 @@
 
           <div class="col-12 q-mb-md" v-if="!checkedPassword">
             <div class="row  q-col-gutter-x-sm">
-              <div class="col-8">
+              <div class="col-7">
                 <q-input label-slot type="password" filled dense v-model="currentPW"
                   color="blue-grey-9" ref="currentPW">
                   <template v-slot:label>
@@ -57,7 +57,7 @@
                 </q-input>
               </div>
 
-              <div class="col-4">
+              <div class="col-5">
                 <q-btn label="비밀번호 수정" class="full-width" 
                  color="blue-grey-8" @click="passwordCheck"/>
               </div>
@@ -107,10 +107,10 @@
 
           <div class="col-12 q-mb-md">
             <div class="row q-col-gutter-x-sm items-center">
-              <div class="col-3 necessary q-pl-md">
+              <div class="col-4 necessary q-pl-md">
                 생년월일
               </div>
-              <div class="col-9">
+              <div class="col-8">
                 <q-input v-model="birth" filled type="date" dense color="brown-13" disable/>
               </div>
             </div>
@@ -320,7 +320,7 @@ export default {
         const apiResult = await API.modifyUser(body);
         if(apiResult.status === 200) {
           // console.log(apiResult);
-          this.msg = '비밀번호 변경에 성공하였습니다.';
+          this.msg = '정보변경에 성공하였습니다.';
           this.isAlert = true;
           this.closeAlert = () => {
             this.$router.go();
@@ -412,7 +412,9 @@ export default {
         };
         const apiResult = await API.changePassword(body);
         if(apiResult.status === 200) {
-          console.log(apiResult);
+          this.msg = '비밀번호 변경에 성공하였습니다.';
+          this.isAlert = true;
+          this.closeAlert = () => { this.$router.go(); };
         } else {
           console.log(apiResult.respone);
           this.msg = '통신에러!';

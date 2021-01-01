@@ -46,7 +46,7 @@ export const store = new Vuex.Store({
   actions: {
     async dispatchGetSrl({ commit, dispatch, getters, state }) {
       const apiResult = await API.getCafeSrl();
-      console.log('getSrl: ', apiResult);
+      // console.log('getSrl: ', apiResult);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
         if(apiResult.data !== null) {
           commit('setCafeSrl', apiResult.data.result[0]);

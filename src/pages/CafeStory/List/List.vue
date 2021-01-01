@@ -43,7 +43,7 @@ export default {
 
   data () {
     return {
-      title: '사장님 카페 스토리 리스트',
+      title: '내 스토리',
       loading: true,
       subBtn: {
         title: '등록',
@@ -94,19 +94,13 @@ export default {
         const data = apiResult.data;
         this.storyObj = data;
         data.forEach((item, idx) => {
-          // const row = {
-          //   id: item.story_srl,
-          //   no: idx + 1,
-          //   content: item.story_content,
-          //   date: item.story_reg_date,
-          // };
           const row = {
             srl: item.story_srl,
             content: item.story_content,
             date: item.story_reg_date,
             imgCount: item.story_image_count,
           };
-          rows.push(row);
+          rows.unshift(row);
         });
 
         this.rows = rows;
@@ -154,7 +148,7 @@ export default {
       const apiResult = await API.deleteStory(body);
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
         // console.log(apiResult);
-        this.initNormalList();
+        this.$router.go();
       } else {
         console.log(apiResult.reponse);
       }

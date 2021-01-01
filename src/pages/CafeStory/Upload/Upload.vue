@@ -27,7 +27,7 @@
                         />
                     </div>
                     <div class="col-3">
-                      <q-btn :disable="img.length===0" label="사진 전부 삭제" @click="removeImgAll"
+                      <q-btn :disable="img.length===0" icon='delete' @click="removeImgAll"
                         color="red" class='full-width' dense/>
                     </div>
                 </div>
@@ -46,6 +46,7 @@
             </q-card-actions>
         </q-card>
 
+        <Alert v-if="isAlert" :msg="msg" @closeAlert="closeAlert"/>
     </q-page>
 </template>
 
@@ -54,6 +55,7 @@ import rootStoreHelper from 'src/mixins/rootStoreHelper';
 import Header from 'components/Header/Header';
 import API from 'src/repositories/CafeStory/UploadAPI';
 import Carousel from 'components/Card/Carousel';
+import Alert from 'components/Alert/Alert';
 
 export default {
   name: 'StoryUpload',
@@ -61,6 +63,7 @@ export default {
   components: {
     Header,
     Carousel,
+    Alert,
   },
   
   mixins: [rootStoreHelper],
@@ -71,6 +74,9 @@ export default {
       contents: '',
       img: [],
       imgUrls: [],
+      isAlert: false,
+      msg: '',
+      closeAlert: () => { this.isAlert = false; },
     };
   },
 
@@ -94,7 +100,11 @@ export default {
       const apiResult = await API.uploadStory(body);
 
       if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-        console.log(apiResult);
+        this.msg = '스토리 등록에 성공하였습니다.';
+        this.isAlert = true;
+        this.closeAlert = () => {
+          this.$router.push({ name: 'cafeStoryList' });
+        };
       } else {
         console.log(apiResult.response);
       }
