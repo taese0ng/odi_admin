@@ -40,6 +40,7 @@ export default function ({ store, ssrContext }) {
         if(!store.state.cafeSrl) {
           await store.dispatch('dispatchGetSrl');
           if(store.state.cafeSrl === 'firstPeople') {
+            await store.dispatch('dispatchGetUserInfo');
             store.commit('setIsLogin', { value: false });
             return next({ name: 'cafeNormalInfo' });
           } else {

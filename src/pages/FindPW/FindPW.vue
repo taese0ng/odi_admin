@@ -5,6 +5,24 @@
     <q-card flat bordered class="q-mt-md maxContainer-md q-mx-auto">
       <q-card-section>
         <div class="row">
+          <div class="col-12 q-mb-md ">
+            <div class="text-grey">
+              <q-input label-slot filled dense v-model="id"
+                color="blue-grey-9" ref="id">
+                <template v-slot:label>
+                  <div class="row all-pointer-events items-center necessary">
+                    아이디
+                  </div>
+                </template>
+                <template v-if="id" v-slot:append>
+                  <q-icon name="close" @click.stop="id = ''" class="cursor-pointer"/>
+                </template>
+              </q-input>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-9 q-mb-md q-pr-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="phone"
@@ -130,6 +148,7 @@ export default {
     return {
       title: '비밀번호 찾기',
       
+      id: '',
       password: '',
       passwordConfirm: '',
       phone: '',
@@ -164,6 +183,7 @@ export default {
         const body = {
           reg_type: 'business',
           phonenum: this.phone,
+          id: this.id,
           password: this.password,
         };
         const apiResult = await API.changePassword(body);

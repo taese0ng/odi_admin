@@ -241,11 +241,22 @@
 
             <Carousel v-if="imgUrls.length !== 0" :imgUrls="imgUrls" class='q-mt-sm'/>
 
-            <q-btn :disable="filesImages.length===0" label="사진 전부 삭제" @click="removeImgAll"
-            color="primary" class='full-width q-mt-sm' dense/>
+            <q-btn :disable="filesImages.length===0" icon='delete' @click="removeImgAll"
+            color="red" class='full-width q-mt-sm' dense/>
           </div>
 
           <div class="col-12 q-mb-md q-pa-sm bg-grey-2">
+            <div class="row q-col-gutter-lg q-mr-xl">
+              <div class="col" style="font-size: 3px;">
+                분류 ex)음료, 디저트
+              </div>
+              <div class="col" style="font-size: 3px;">
+                메뉴 이름
+              </div>
+              <div class="col" style="font-size: 3px;">
+                가격 ex)1000
+              </div>
+            </div>
             <template v-for="(item) in menu">
               <div class='row q-mb-sm q-col-gutter-sm' :key="item.id">
                 <div class='col-3'>

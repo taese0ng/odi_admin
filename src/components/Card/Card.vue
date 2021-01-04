@@ -77,7 +77,7 @@ export default {
 
   data() {
     return{
-      imgUrl: ['https://cafeodi.co.kr/api/normal/get_image?image_category_1=story&image_category_2=6&image_count=1'],
+      imgUrl: [],
     };
   },
 

@@ -61,10 +61,10 @@
 
           <div class="col-12 q-mb-md">
             <div class="row q-col-gutter-x-sm items-center">
-              <div class="col-3 necessary q-pl-md">
+              <div class="col-4 necessary q-pl-md">
                 생년월일
               </div>
-              <div class="col-9">
+              <div class="col-8">
                 <q-input v-model="birth" filled type="date" dense color="brown-13"/>
               </div>
             </div>
@@ -206,7 +206,7 @@
         </div>
 
         <div class="row q-col-gutter-sm">
-          <div class="col-9 q-mb-xs">
+          <div class="col-8 q-mb-xs">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="phone"
                        color="blue-grey-9" ref="phone" type="number">
@@ -219,13 +219,13 @@
             </div>
           </div>
 
-          <div class="col-3 q-mb-xs">
+          <div class="col-4 q-mb-xs">
             <q-btn label="인증요청" class="full-width" color="primary" @click="phoneCertifyRequest = true"/>
           </div>
         </div>
 
         <div class="row q-col-gutter-sm" v-if="phoneCertifyRequest">
-          <div class="col-9 q-mb-md">
+          <div class="col-8 q-mb-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="phoneCertifyNum"
                        color="blue-grey-9" type="number">
@@ -238,7 +238,7 @@
             </div>
           </div>
 
-          <div class="col-3 q-mb-md">
+          <div class="col-4 q-mb-md">
             <q-btn label="인증하기" class="full-width" color="primary" @click="phoneCertify = true"/>
           </div>
         </div>

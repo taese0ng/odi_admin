@@ -6,7 +6,7 @@
   "author": "taese0ng <taese0ng@naver.com>",
   "private": true,
   "scripts": {
-    "dev": "QENV=development quasar dev -m pwa",
+    "dev": "cross-env QENV=development quasar dev -m pwa",
     "build": "QENV=production quasar build -m pwa",
     "build:pwa": "QENV=production quasar build -m pwa",
     "lint": "eslint --ext .js,.vue ./",
