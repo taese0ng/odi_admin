@@ -187,13 +187,18 @@ export default {
           password: this.password,
         };
         const apiResult = await API.changePassword(body);
+        // console.log(apiResult);
         if(apiResult.status === 200 && apiResult.statusText === 'OK') {
-          this.msg = '비밀번호 변경에 성공하였습니다.';
-          this.isAlert = true;
-          this.closeAlert = () => {
-            this.$router.push({ name: 'login' });
-          };
-          // console.log(apiResult);
+          if(apiResult.data.result === 'change success') {
+            this.msg = '비밀번호 변경에 성공하였습니다.';
+            this.isAlert = true;
+            this.closeAlert = () => {
+              this.$router.push({ name: 'login' });
+            };
+          } else {
+            this.msg = '비밀번호 변경에 실패하였습니다.';
+            this.isAlert = true;
+          }
         } else {
           this.msg = '비밀번호 변경에 실패하였습니다.';
           this.isAlert = true;
