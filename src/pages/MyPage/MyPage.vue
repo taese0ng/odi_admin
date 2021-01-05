@@ -299,10 +299,7 @@ export default {
     },
 
     async modifyUser() {
-      if(this.checkedPassword) {
-        this.msg = '비밀번호변경을 해주세요!';
-        this.isAlert = true;
-      }else if(!this.email) {
+      if(!this.email) {
         this.msg = '이메일을 입력해주세요!';
         this.isAlert = true;
       } else if(!this.name) {
@@ -411,10 +408,16 @@ export default {
           password: this.password,
         };
         const apiResult = await API.changePassword(body);
+        // console.log(apiResult);
         if(apiResult.status === 200) {
-          this.msg = '비밀번호 변경에 성공하였습니다.';
-          this.isAlert = true;
-          this.closeAlert = () => { this.$router.go(); };
+          if(apiResult.data.result === 'change success') {
+            this.msg = '비밀번호 변경에 성공하였습니다.';
+            this.isAlert = true;
+            this.closeAlert = () => { this.$router.go(); };
+          } else {
+            this.msg = '비밀번호 변경에 실패하였습니다.';
+            this.isAlert = true;
+          }
         } else {
           console.log(apiResult.respone);
           this.msg = '통신에러!';

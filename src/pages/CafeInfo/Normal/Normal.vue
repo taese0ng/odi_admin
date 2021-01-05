@@ -246,15 +246,18 @@
           </div>
 
           <div class="col-12 q-mb-md q-pa-sm bg-grey-2">
-            <div class="row q-col-gutter-lg q-mr-xl">
-              <div class="col" style="font-size: 3px;">
-                분류 ex)음료, 디저트
+            <div v-if="menu.length > 0" class="row q-mr-xl">
+              <div class="col-5" >
+                <div style="font-size: 0.9em;">분류</div>
+                <div style="font-size: 0.8em;">ex)음료,디저트</div>
               </div>
-              <div class="col" style="font-size: 3px;">
-                메뉴 이름
+              <div class="col-4" style="font-size: 0.9em;">
+                <div style="font-size: 0.9em;">메뉴 이름</div>
+                <div style="font-size: 0.8em;">ex)카페라떼</div>
               </div>
-              <div class="col" style="font-size: 3px;">
-                가격 ex)1000
+              <div class="col-3">
+                <div style="font-size: 0.9em;">가격</div> 
+                <div style="font-size: 0.8em;">ex)1000</div>
               </div>
             </div>
             <template v-for="(item) in menu">

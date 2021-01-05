@@ -5,7 +5,7 @@
     <q-card flat bordered class="q-mt-md maxContainer-md q-mx-auto">
       <q-card-section>
         <div class="row">
-          <div class="col-12 q-mb-md">
+          <div class="col-8 q-mb-md q-pr-md">
             <div class="text-grey">
               <q-input label-slot filled dense v-model="id"
               color="blue-grey-9" ref="id">
@@ -19,6 +19,10 @@
                 </template>
               </q-input>
             </div>
+          </div>
+
+          <div class="col-4 q-mb-md">
+            <q-btn color="primary" class="full-width" label="중복확인" @click="checkID"/>
           </div>
     
           <div class="col-12 q-mb-md">        
@@ -55,7 +59,7 @@
                 </div>
               </div>
               <span v-if="password.length>0 && password.length<8" class="text-red full-width">8자이상 입력하세요. </span>
-              <span v-if="password !== passwordConfirm" class="text-red">비밀번호가 일치하지 않습니다.</span>
+              <span v-if="password !== passwordConfirm && passwordConfirm.length>0" class="text-red">비밀번호가 일치하지 않습니다.</span>
             </div>
           </div>
 
@@ -154,9 +158,9 @@
 
         <div class="row">
 
-          <div class="col-6 q-mb-md">
+          <div class="col-12 q-mb-md">
             <div class="text-grey">
-              <q-input label-slot filled dense v-model="email"
+              <q-input label-slot filled dense v-model="email" @input="(val) => isEmail(val)"
                        color="blue-grey-9" ref="email">
                 <template v-slot:label>
                   <div class="row all-pointer-events items-center necessary">
@@ -167,21 +171,7 @@
                   <q-icon name="close" @click.stop="email = ''" class="cursor-pointer"/>
                 </template>
               </q-input>
-            </div>
-          </div>
-          
-          <div class="col-1 q-mb-md self-center text-center">
-            @
-          </div>
-
-          <div class="col-5 q-mb-md self-center">
-            <q-input filled dense :value="selectedEmail" :disable="inputEmail" color="blue-grey-9"/>
-          </div>
-
-          <div class="col-12 q-mb-md">
-            <div class="text-grey">
-              <q-select outlined v-model="selectedEmail" :options="emailList" 
-              label="이메일 주소" color="brown-13" dense emit-value map-options @input="(val)=>selectEmail(val)"/>
+              <div v-if="email.length > 0 && !this.checkedEmail" class="text-red">알맞는 형식으로 작성하시오.</div>
             </div>
           </div>
 
@@ -287,8 +277,10 @@ export default {
       title: '회원가입',
 
       id: '',
+      checkedID: false,
       businessNum: '',
       email: '',
+      checkedEmail: false,
       name: '',
       password: '',
       passwordConfirm: '',
@@ -311,14 +303,6 @@ export default {
         { label: '부가가치세 면세사업자', value: '부가가치세 면세사업자' }, 
         { label: '면세법인 사업자', value: '면세법인 사업자' }],
     
-      selectedEmail: '',
-      inputEmail: false,
-      emailList: [
-        { label: '네이버', value: 'naver.com' },
-        { label: '다음', value: 'hanmail.net' },
-        { label: '구글', value: 'gmail.com' },
-        { label: '직접입력', value: '' },
-      ],
       agreeAD: false,
 
       phoneCertifyRequest: false,
@@ -345,8 +329,8 @@ export default {
       } else if(!this.password || !this.passwordConfirm || this.password !== this.passwordConfirm || this.password.length < 8) {
         this.msg = '비밀번호를 확인해주세요!';
         this.isAlert = true;
-      } else if(!this.email || this.selectedEmail.length < 1) {
-        this.msg = '이메일을 입력해주세요!';
+      } else if(!this.email || !this.checkedEmail) {
+        this.msg = '이메일을 확인해주세요!';
         this.isAlert = true;
       } else if(!this.name) {
         this.msg = '이름을 입력해주세요!';
@@ -373,62 +357,48 @@ export default {
         this.msg = '생년월일을 확인해주세요!';
         this.isAlert = true;
       } else {
-        const checkBody = {
-          user_type: 'id',
-          reg_type: 'business',
-          check_data: this.id,
-        };
+        if(this.checkedID) {
+          const body = new FormData();
+          body.append('reg_type', 'business');
+          body.append('id', this.id);
+          body.append('password', this.password);
+          body.append('email', this.email);
+          body.append('nick_name', this.name);
+          body.append('phonenum', this.phone);
+          body.append('birth', this.birth.replace(/-/gi, ''));
+          body.append('business_type', this.businessType);
+          body.append('business_type_detail', this.businessEvent);
+          body.append('reg_num', this.businessNum);
+          body.append('tax_classification', this.selectedTax);
+          body.append('reg_file', this.img);
+          body.append('is_ad', this.agreeAD ? 'Y' : 'N');
 
-        const checkResult = await API.checkID(checkBody);
-        console.log(checkResult);
-        if(checkResult.status === 200 && checkResult.statusText === 'OK') {
-          if(!checkResult.data.result) {
-            const body = new FormData();
-            body.append('reg_type', 'business');
-            body.append('id', this.id);
-            body.append('password', this.password);
-            body.append('email', `${this.email}@${this.selectedEmail}`);
-            body.append('nick_name', this.name);
-            body.append('phonenum', this.phone);
-            body.append('birth', this.birth.replace(/-/gi, ''));
-            body.append('business_type', this.businessType);
-            body.append('business_type_detail', this.businessEvent);
-            body.append('reg_num', this.businessNum);
-            body.append('tax_classification', this.selectedTax);
-            body.append('reg_file', this.img);
-            body.append('is_ad', this.agreeAD ? 'Y' : 'N');
-
-            const apiResult = await API.signup(body);
+          const apiResult = await API.signup(body);
+          // console.log(apiResult);
+          if(apiResult.status === 200) {
             // console.log(apiResult);
-            if(apiResult.status === 200) {
-              // console.log(apiResult);
-              if(apiResult.statusText === 'OK') {
-                if(apiResult.data.result === 'exist id') {
-                  this.msg = '존재하는 아이디입니다.';
-                  this.isAlert = true;
-                } else {
-                  this.msg = '회원가입에 성공하였습니다.';
-                  this.isAlert = true;
-                  this.closeAlert = () => {
-                    this.$router.push({ name: 'login' });
-                  };
-                }
-              } else {
-                this.msg = '회원가입이 실패하였습니다.';
+            if(apiResult.statusText === 'OK') {
+              if(apiResult.data.result === 'exist id') {
+                this.msg = '존재하는 아이디입니다.';
                 this.isAlert = true;
+              } else {
+                this.msg = '회원가입에 성공하였습니다.';
+                this.isAlert = true;
+                this.closeAlert = () => {
+                  this.$router.push({ name: 'login' });
+                };
               }
             } else {
-              console.log(apiResult.response);
               this.msg = '회원가입이 실패하였습니다.';
               this.isAlert = true;
             }
           } else {
-            this.msg = '이미 존재하는 아이디입니다.';
+            console.log(apiResult.response);
+            this.msg = '회원가입이 실패하였습니다.';
             this.isAlert = true;
           }
         } else {
-          console.log(checkResult.response);
-          this.msg = '통신 에러';
+          this.msg = '아이디 중복확인을 해주세요.';
           this.isAlert = true;
         }
       }
@@ -459,13 +429,36 @@ export default {
       this.imgSrc = URL.createObjectURL(this.img);
     },
 
-    selectEmail(selected) {
-      if(selected !== '') {
-        this.inputEmail = true;
+    async checkID() {
+      const checkBody = {
+        user_type: 'id',
+        reg_type: 'business',
+        check_data: this.id,
+      };
+
+      const checkResult = await API.checkID(checkBody);
+
+      if(checkResult.status === 200 && checkResult.statusText === 'OK') {
+        if(!checkResult.data.result) {
+          this.msg = '사용가능한 아이디입니다.';
+          this.isAlert = true;
+          this.checkedID = true;
+        } else{
+          this.msg = '존재하는 아이디입니다.';
+          this.isAlert = true;
+        }
       } else {
-        this.inputEmail = false;
+        this.msg = '통신 에러';
+        this.isAlert = true;
       }
     },
+
+    isEmail(asValue) {
+      // eslint-disable-next-line no-useless-escape
+      const regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+      this.checkedEmail = regExp.test(asValue); // 형식에 맞는 경우 true
+    },
+
   },
 };
 </script>
